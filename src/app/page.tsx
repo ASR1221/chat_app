@@ -2,6 +2,13 @@
 
 import { redirect } from "next/navigation";
 
+import { useUser } from "@/providers/supabaseProvider";
+
 export default function Landing() {
-   redirect("/signup"); // TODO: change later to /login 
+
+   const { user } = useUser();
+
+   if (user) redirect(`/user/${user.id}`); 
+      
+   redirect("/login");
 }
