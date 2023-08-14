@@ -29,6 +29,7 @@ export default function AuthProvider (props: any) {
          (event, session) => {
             setUser(session?.user ?? null);
             setIsloading(false);
+            console.log("Auth state changed:" + event)
          }
       );
 
