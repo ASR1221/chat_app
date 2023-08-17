@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { type User } from "@supabase/supabase-js";
 
-import { supabase } from "@/utils/supabase";
+import { clientSupabase } from "@/utils/clientSupabase";
 
 export const AuthContext = createContext<{
    user: User | null;
@@ -13,23 +13,21 @@ export const AuthContext = createContext<{
    isLoading: true,
 });
 
-export default function AuthProvider (props: any) {
+export default function AuthProvider(props: any) {
    const [user, setUser] = useState<User | null>(null);
    const [isLoading, setIsloading] = useState(true);
 
    useEffect(() => {
-      supabase
-         .auth.getSession()
-         .then(({ data: { session } }) => {
-            setUser(session?.user ?? null);
-            setIsloading(false);
-         });
+      clientSupabase.auth.getSession().then(({ data: { session } }) => {
+         setUser(session?.user ?? null);
+         setIsloading(false);
+      });
 
-      const { data: authListener } = supabase.auth.onAuthStateChange(
+      const { data: authListener } = clientSupabase.auth.onAuthStateChange(
          (event, session) => {
             setUser(session?.user ?? null);
             setIsloading(false);
-            console.log("Auth state changed:" + event)
+            console.log("Auth state changed:" + event);
          }
       );
 
@@ -43,7 +41,7 @@ export default function AuthProvider (props: any) {
       isLoading,
    };
 
-   return <AuthContext.Provider value={value} {...props}/>
+   return <AuthContext.Provider value={value} {...props} />;
 }
 
 export const useUser = () => {

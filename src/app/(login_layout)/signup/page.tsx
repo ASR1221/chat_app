@@ -3,17 +3,16 @@
 import { BaseSyntheticEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { supabase } from "@/utils/supabase";
+import { clientSupabase } from "@/utils/clientSupabase";
 
 export default function SignUp() {
-
    const { push } = useRouter();
    const [message, setMessage] = useState("");
-   
+
    async function handleSubmit(e: BaseSyntheticEvent) {
       e.preventDefault();
 
-      const { error } = await supabase.auth.signUp({
+      const { error } = await clientSupabase.auth.signUp({
          email: e.target[0].value,
          password: e.target[1].value,
       });
@@ -26,13 +25,15 @@ export default function SignUp() {
       push(`/signup/verify?email=${e.target[0].value}`);
    }
 
-   return <form onSubmit={handleSubmit} >
-      <label htmlFor="email">Email: </label>
-      <input type="text" name="email" className="text-black"/>
-      <label htmlFor="password">Password: </label>
-      <input type="text" name="password" className="text-black" />
-      <button type="submit">Submit</button>
+   return (
+      <form onSubmit={handleSubmit}>
+         <label htmlFor="email">Email: </label>
+         <input type="text" name="email" className="text-black" />
+         <label htmlFor="password">Password: </label>
+         <input type="text" name="password" className="text-black" />
+         <button type="submit">Submit</button>
 
-      <p>{ message }</p>
-   </form>
+         <p>{message}</p>
+      </form>
+   );
 }
