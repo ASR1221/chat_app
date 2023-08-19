@@ -5,12 +5,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 import type { Message, ConversationUser, User, Conversation } from "@/types/supabaseTables";
 import { clientSupabase } from "@/utils/clientSupabase";
 
-type OUser = Omit<User, "id" | "created_at" | "last_seen">
+type OUser = Omit<User, "id" | "created_at" | "last_seen">;
 
 type Convo = Omit<Conversation, "created_at"> & {
    messages: Message[] | null,
    users: Omit<User, "created_at" | "last_seen">[],
-}
+};
 
 
 export const realtimeContext = createContext({});
@@ -125,7 +125,7 @@ export default function RealtimeProvider(props: any) {
                         if (message.id === newMessage.id) return newMessage;
 
                         return message;
-                     }) ?? null
+                     }) ?? null;
                      
                      return { ...c, messages: m };
                   };
@@ -170,6 +170,7 @@ export default function RealtimeProvider(props: any) {
       const convoChannel = clientSupabase.channel("allConversations")
          .on("postgres_changes", { event: '*', schema: 'public', table: 'conversation_user', filter: `user_id=eq.${userId}` }, (payload) => {
 
+            console.log(payload);
             
             if (payload.eventType === "DELETE") {
                setConvos(convos.filter(c => c.id !== payload.old.conversation_id));
@@ -201,7 +202,6 @@ export default function RealtimeProvider(props: any) {
                   });
             }
 
-            console.log(payload)
          }).subscribe()
 
       return () => {
