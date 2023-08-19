@@ -87,8 +87,8 @@ export default function RealtimeProvider(props: any) {
 
          setConvos(final);
 
-      } catch (e) {
-         throw new Error("Some thing went wrong, please refresh the page.");
+      } catch (e: any) {
+         throw new Error(e.message);
       }
    }
 
@@ -170,14 +170,35 @@ export default function RealtimeProvider(props: any) {
       const convoChannel = clientSupabase.channel("allConversations")
          .on("postgres_changes", { event: '*', schema: 'public', table: 'conversation_user', filter: `user_id=eq.${userId}` }, (payload) => {
 
-            const newConvo = payload.new as ConversationUser;
-
+            
             if (payload.eventType === "DELETE") {
-               // setConvos(p => p.filter(old => old.conversation_id !== payload.old.id));
+               setConvos(convos.filter(c => c.id !== payload.old.conversation_id));
             }
-
+            
             if (payload.eventType === "INSERT") {
+               const newConvo = payload.new as ConversationUser;
 
+               clientSupabase.from("conversations").select(`
+                  id,
+                  name,
+                  owner_id,
+                  group_img_url,
+                  users!conversation_user (
+                     id,
+                     user_name,
+                     full_name,
+                     bio,
+                     profile_img_url
+                  ),
+                  messages (*)
+               `).eq("id", newConvo.conversation_id)
+                  .then(response => {
+                     const updated = convos;
+                     if (response.error) throw new Error(response.error.message);
+                     if (response.data) updated.push(response.data[0]);
+
+                     setConvos(updated);
+                  });
             }
 
             console.log(payload)
@@ -197,7 +218,6 @@ export default function RealtimeProvider(props: any) {
 
    const value = {
       userId,
-      // messages,
       convos,
    };
 
