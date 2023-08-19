@@ -1,0 +1,215 @@
+"use client";
+
+import { createContext, useContext, useEffect, useState } from "react";
+
+import type { Message, ConversationUser, User, Conversation } from "@/types/supabaseTables";
+import { clientSupabase } from "@/utils/clientSupabase";
+
+type OUser = Omit<User, "id" | "created_at" | "last_seen">
+
+type Convo = Omit<Conversation, "created_at"> & {
+   messages: Message[] | null,
+   users: Omit<User, "created_at" | "last_seen">[],
+}
+
+
+export const realtimeContext = createContext({});
+
+export default function RealtimeProvider(props: any) {
+
+   const [userId, setUserId] = useState<string | null>(null);
+   const [user, setUser] = useState<OUser>({
+      user_name: "",
+      full_name: "",
+      bio: null,
+      profile_img_url: null,
+   });
+   const [convos, setConvos] = useState<Convo[]>([]);
+   
+   async function fetchAll() {
+
+      try {
+         
+         // get all convo of  a user
+         const response = await clientSupabase
+            .from("users")
+            .select(`
+               user_name,
+               full_name,
+               bio,
+               profile_img_url,
+               conversations!conversation_user (
+                  id,
+                  name,
+                  owner_id,
+                  group_img_url,
+                  users!conversation_user (
+                     id,
+                     user_name,
+                     full_name,
+                     bio,
+                     profile_img_url
+                  )
+               )
+            `)
+            .eq("id", userId);
+
+         if (!response.data) throw new Error("Some thing went wrong, please refresh the page.");
+
+         // get the last 10 message of every convo
+         const promises = response.data[0].conversations.map((conv) =>
+            clientSupabase
+               .from("messages")
+               .select()
+               .eq("conversation_id", conv.id)
+               .order("created_at", { ascending: false })
+               .limit(10)
+         );
+
+         const response2 = await Promise.all(promises);
+
+         const final = response.data[0].conversations.map(
+            (conv, i) => ({
+               ...conv,
+               messages: response2[i].data?.flatMap(d => {
+                  if (d.conversation_id === conv.id) return d
+                  return [];
+               }) ?? null
+            })
+         );
+
+         setUser({
+            user_name: response.data[0].user_name,
+            full_name: response.data[0].full_name,
+            bio: response.data[0].bio,
+            profile_img_url: response.data[0].profile_img_url,
+         });
+
+         setConvos(final);
+
+      } catch (e) {
+         throw new Error("Some thing went wrong, please refresh the page.");
+      }
+   }
+
+
+
+   useEffect(() => {
+
+      clientSupabase.auth.getSession().then(({ data: { session } }) => {
+         setUserId(session?.user.id ?? null);
+      });
+
+      const { data: authListener } = clientSupabase.auth.onAuthStateChange(
+         (event, session) => {
+            setUserId(session?.user.id ?? null);
+            console.log("Auth state changed:" + event);
+         }
+      );
+
+      if (!userId) return;
+
+      fetchAll();
+      
+      const messagesChannel = clientSupabase.channel("allMessages")
+         .on("postgres_changes", { event: '*', schema: 'public', table: 'messages' }, (payload) => {
+            
+            console.log(payload);
+            const newMessage = payload.new as Message;
+            
+            if (payload.eventType === "UPDATE") {
+               const updated = convos.map(c => {
+
+                  if (c.id === newMessage.conversation_id) {
+                     const m = c.messages?.map(message => {
+                        if (message.id === newMessage.id) return newMessage;
+
+                        return message;
+                     }) ?? null
+                     
+                     return { ...c, messages: m };
+                  };
+
+                  return c;
+               });
+
+               setConvos(updated);
+               
+            }
+
+            if (payload.eventType === "DELETE") {
+               const updated = convos.map(c => {
+
+                  if (c.id === payload.old.conversation_id) {
+                     c.messages?.filter(message => message.id !== payload.old.id);
+                  }
+
+                  return c;
+               });
+
+               setConvos(updated);
+            }
+
+            if (payload.eventType === "INSERT") {
+               const updated = convos.map(c => {
+
+                  if (c.id === newMessage.conversation_id) {
+                     const m = c.messages ?? [];
+                     m.push(newMessage);
+                     return { ...c, messages: m };
+                  };
+
+                  return c;
+               });
+
+               setConvos(updated);
+            }
+
+         }).subscribe()
+      
+      const convoChannel = clientSupabase.channel("allConversations")
+         .on("postgres_changes", { event: '*', schema: 'public', table: 'conversation_user', filter: `user_id=eq.${userId}` }, (payload) => {
+
+            const newConvo = payload.new as ConversationUser;
+
+            if (payload.eventType === "DELETE") {
+               // setConvos(p => p.filter(old => old.conversation_id !== payload.old.id));
+            }
+
+            if (payload.eventType === "INSERT") {
+
+            }
+
+            console.log(payload)
+         }).subscribe()
+
+      return () => {
+         authListener.subscription.unsubscribe();
+         messagesChannel.unsubscribe();
+         convoChannel.unsubscribe();
+      };
+
+   }, [userId]);
+
+
+
+
+
+   const value = {
+      userId,
+      // messages,
+      convos,
+   };
+
+   return <realtimeContext.Provider value={value} {...props} />;
+}
+
+
+
+export const useRealtime = () => {
+   const context = useContext(realtimeContext);
+   if (context === undefined) {
+      throw new Error("useRealtime must be used within a realtimeContextProvider.");
+   }
+   return context;
+};

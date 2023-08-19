@@ -13,8 +13,8 @@ export default function Conversations() {
       <h1>
          <Link href="">nav</Link>
          <p role="heading" aria-level={2}>App name</p>
-         <Link href=""></Link>
+         <Link href="">search</Link>
       </h1>
-      {/* <ConversationsComp userId={userId} /> */}
+      <ConversationsComp userId={userId} />
    </div>;
 }

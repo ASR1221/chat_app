@@ -1,5 +1,5 @@
 
-export default async function ConversationsComp({ conversations }: { conversations: string }) { // should be an array of convos
+export default async function ConversationsComp({ /* conversations */ userId }: { userId: string /* conversations: string */ }) { // should be an array of convos
    
-   return <div></div>
+   return <div>convos comp</div>
 }
