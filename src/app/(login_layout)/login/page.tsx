@@ -27,14 +27,14 @@ export default function LogIn() {
    }
 
    return (
-      <form onSubmit={handleSubmit}>
-         <label htmlFor="email">Email: </label>
-         <input type="text" name="email_username" />
-         <label htmlFor="password">Password: </label>
-         <input type="text" name="password" />
-         <button type="submit">Submit</button>
+      <form onSubmit={handleSubmit} className="flex flex-col">
+         <label className="block" htmlFor="email">Email: </label>
+         <input className="mt-1 mb-3 p-1 border-2 border-black" type="text" name="email_username" />
+         <label className="block" htmlFor="password">Password: </label>
+         <input className="mt-1 mb-3 p-1 border-2 border-black" type="text" name="password" />
+         <button type="submit" className="p-1 bg-black hover:bg-black/80 text-white">Log In</button>
 
-         <p>{message}</p>
+         <p className="text-red-600">{message}</p>
       </form>
    );
 }

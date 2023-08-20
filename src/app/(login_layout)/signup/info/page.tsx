@@ -36,16 +36,16 @@ export default function SignUpInfo() {
    }
 
    return (
-      <form onSubmit={handleSubmit}>
-         <label htmlFor="fname">First name: </label>
-         <input type="text" name="fname" />
-         <label htmlFor="lname">Last name: </label>
-         <input type="text" name="lname" />
-         <label htmlFor="username">Username: (username must be uniqe)</label>
-         <input type="text" name="username" />
-         <button type="submit">Submit</button>
+      <form onSubmit={handleSubmit} className="flex flex-col">
+         <label className="block" htmlFor="fname">First name: </label>
+         <input className="mt-1 mb-3 p-1 border-2 border-black" type="text" name="fname" />
+         <label className="block" htmlFor="lname">Last name: </label>
+         <input className="mt-1 mb-3 p-1 border-2 border-black" type="text" name="lname" />
+         <label className="block" htmlFor="username">Username: <span className="text-xs">( must be uniqe)</span></label>
+         <input className="mt-1 mb-3 p-1 border-2 border-black" type="text" name="username" />
+         <button type="submit" className="p-1 bg-black hover:bg-black/80 text-white">Submit</button>
 
-         <p>{message}</p>
+         <p className="text-red-600">{message}</p>
       </form>
    );
 }

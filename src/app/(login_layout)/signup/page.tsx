@@ -26,14 +26,14 @@ export default function SignUp() {
    }
 
    return (
-      <form onSubmit={handleSubmit}>
-         <label htmlFor="email">Email: </label>
-         <input type="text" name="email" className="text-black" />
-         <label htmlFor="password">Password: </label>
-         <input type="text" name="password" className="text-black" />
-         <button type="submit">Submit</button>
+      <form onSubmit={handleSubmit} className="flex flex-col">
+         <label className="block" htmlFor="email">Email: </label>
+         <input  className="mt-1 mb-3 p-1 border-2 border-black" type="text" name="email"/>
+         <label className="block" htmlFor="password">Password: </label>
+         <input  className="mt-1 mb-3 p-1 border-2 border-black" type="text" name="password"/>
+         <button type="submit" className="p-1 bg-black hover:bg-black/80 text-white">Sign Up</button>
 
-         <p>{message}</p>
+         <p className="text-red-600">{message}</p>
       </form>
    );
 }

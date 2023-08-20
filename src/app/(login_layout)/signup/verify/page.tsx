@@ -31,10 +31,10 @@ export default function ComoleteSignUp() {
 
    return (
       <form onSubmit={handleSubmit}>
-         <input type="text" name="token" pattern="^\d+${6}" />
-         <button type="submit">Check</button>
+         <input className="mt-1 mb-3 p-1 border-2 border-black" placeholder="######" type="text" name="token" pattern="^\d+${6}" />
+         <button type="submit"  className="py-1 px-2 bg-black hover:bg-black/80 text-white sm:ml-5">Check</button>
 
-         <p>{message}</p>
+         <p className="text-red-600">{message}</p>
       </form>
    );
 }
