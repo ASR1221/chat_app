@@ -1,13 +1,12 @@
 "use client";
 
-import Link from "next/link"; 
+import Link from "next/link";
 
 import ConversationsComp from "../../components/conversation/conversationsComp";
-import { Convo, useRealtime } from "@/providers/realtimeProvider";
+import { useRealtime } from "@/providers/realtimeProvider";
 
 export default function Conversations() {
-
-   const { userId, convos } = useRealtime() as { userId: string, convos: Convo[]};
+   const { userId, convos } = useRealtime();
 
    return <>
       <nav className="flex justify-between p-3">

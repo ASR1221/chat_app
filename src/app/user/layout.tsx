@@ -2,11 +2,9 @@ import { ReactNode } from "react";
 
 import RealtimeProvider from "@/providers/realtimeProvider";
 
-export default function UserLayout({ children }: { children: ReactNode}) {
+export default function UserLayout({ children }: { children: ReactNode }) {
 
-   return <div>
-      <RealtimeProvider>
-         <>{children}</>
-      </RealtimeProvider>
-   </div>;
+   return <RealtimeProvider>
+      {children}
+   </RealtimeProvider>;
 }

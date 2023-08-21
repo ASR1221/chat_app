@@ -13,7 +13,7 @@ export type Convo = Omit<Conversation, "created_at"> & {
 };
 
 
-export const realtimeContext = createContext({});
+export const realtimeContext = createContext<{userId: string, convos: Convo[]}>({userId: "", convos: []});
 
 export default function RealtimeProvider(props: any) {
 
@@ -218,6 +218,7 @@ export default function RealtimeProvider(props: any) {
 
    const value = {
       userId,
+      user,
       convos,
    };
 
@@ -226,7 +227,7 @@ export default function RealtimeProvider(props: any) {
 
 
 
-export const useRealtime = () => {
+export function useRealtime() {
    const context = useContext(realtimeContext);
    if (context === undefined) {
       throw new Error("useRealtime must be used within a realtimeContextProvider.");
