@@ -4,7 +4,9 @@ import RealtimeProvider from "@/providers/realtimeProvider";
 
 export default function UserLayout({ children }: { children: ReactNode}) {
 
-   return <RealtimeProvider>
-      <>{children}</>
-   </RealtimeProvider>
+   return <div>
+      <RealtimeProvider>
+         <>{children}</>
+      </RealtimeProvider>
+   </div>;
 }
