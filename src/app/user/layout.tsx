@@ -1,5 +1,3 @@
-"use client";
-
 import { ReactNode } from "react";
 
 import RealtimeProvider from "@/providers/realtimeProvider";

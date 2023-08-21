@@ -6,7 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 export default function SetColors() {
 
    const { push } = useRouter();
-   const userId = useParams().id;
+   const userId = useParams().id; //! to be edited
    
    function handleClick() {
 

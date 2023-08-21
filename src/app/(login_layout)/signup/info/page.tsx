@@ -32,7 +32,7 @@ export default function SignUpInfo() {
          return;
       }
 
-      push(`/user/${userId}`);
+      push(`/user`);
    }
 
    return (

@@ -7,7 +7,7 @@ import { clientSupabase } from "@/utils/clientSupabase";
 
 type OUser = Omit<User, "id" | "created_at" | "last_seen">;
 
-type Convo = Omit<Conversation, "created_at"> & {
+export type Convo = Omit<Conversation, "created_at"> & {
    messages: Message[] | null,
    users: Omit<User, "created_at" | "last_seen">[],
 };
