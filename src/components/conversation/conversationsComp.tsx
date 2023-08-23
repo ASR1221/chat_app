@@ -35,16 +35,16 @@ export default function ConversationsComp({ conversations, userId }: { conversat
                   </div>
                   {convo.messages?.length ? <div className="self-end">
                      {getUnreadMessages(convo.messages) !== 0 && <div className="p-1 bg-red-600 rounded-md">{getUnreadMessages(convo.messages)}</div> }
-                     <p className="text-xs">
+                     <div className="text-xs">
                         { convo.messages.at(-1)?.sender_id === userId && <p>Sent</p>}
-                        {new Date(convo.messages.at(-1)?.created_at ?? "")
+                        <p>{new Date(convo.messages.at(-1)?.created_at ?? "")
                            .toLocaleTimeString(undefined, {
                               hour: 'numeric',
                               minute: '2-digit',
                               hour12: true
                            })
-                        }
-                     </p>
+                        }</p>
+                     </div>
                   </div> : null}
                </div>
             </Link>)
