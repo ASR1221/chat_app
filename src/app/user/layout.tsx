@@ -1,5 +1,7 @@
 "use client";
 
+// TODO: add links in search results
+
 import { type ReactNode, type KeyboardEvent, useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";

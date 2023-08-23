@@ -21,7 +21,7 @@ export default function Search() {
 
       if (!searchTerm) return;
 
-      if (searchTerm.includes("@")) 
+      if (searchTerm.includes("@")) {
          clientSupabase.from("users")
             .select("bio, full_name, id, last_seen, profile_img_url, user_name")
             .eq("user_name", searchTerm.split("@")[1])
@@ -32,12 +32,13 @@ export default function Search() {
                }
                setUsers(response.data);
             });
-      
-      const convResult = convos.filter(conv => conv.name === searchTerm);
-      setConversations(convResult);
-
-      const contsResult = conts.filter(cont => cont.users[0].full_name === searchTerm || cont.users[0].user_name === searchTerm);
-      setContacts(contsResult);
+      } else {
+         const convResult = convos?.filter(conv => conv.name === searchTerm);
+         setConversations(convResult);
+   
+         const contsResult = conts?.filter(cont => cont.users[0].full_name === searchTerm || cont.users[0].user_name === searchTerm);
+         setContacts(contsResult);
+      }
 
    }, [searchTerm]);
 
