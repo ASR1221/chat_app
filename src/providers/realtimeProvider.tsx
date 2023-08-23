@@ -12,12 +12,31 @@ export type Convo = Omit<Conversation, "created_at"> & {
    users: Omit<User, "created_at" | "last_seen">[],
 };
 
+type Contact = {
+   users: Omit<User, "created_at">[]
+};
 
-export const realtimeContext = createContext<{userId: string, convos: Convo[]}>({userId: "", convos: []});
+export const realtimeContext = createContext<{
+   userId: string,
+   user: OUser,
+   convos: Convo[],
+   conts: Contact[],
+}>({
+   userId: "",
+   user: {
+      bio: "",
+      full_name: "",
+      profile_img_url: "",
+      user_name: "",
+   },
+   convos: [],
+   conts: []
+});
 
 export default function RealtimeProvider(props: any) {
 
    const [userId, setUserId] = useState<string | null>(null);
+   const [conts, setConts] = useState<Contact[] | null>(null);
    const [user, setUser] = useState<OUser>({
       user_name: "",
       full_name: "",
@@ -78,6 +97,17 @@ export default function RealtimeProvider(props: any) {
             })
          );
 
+         const response3 = await clientSupabase.from("user_contact").select(`
+            users!contact_id (
+               id,
+               user_name,
+               full_name,
+               bio,
+               profile_img_url,
+               last_seen
+            )
+         `).eq("user_id", userId);
+
          setUser({
             user_name: response.data[0].user_name,
             full_name: response.data[0].full_name,
@@ -86,6 +116,8 @@ export default function RealtimeProvider(props: any) {
          });
 
          setConvos(final);
+
+         setConts(response3.data)
 
       } catch (e: any) {
          throw new Error(e.message);
@@ -220,6 +252,7 @@ export default function RealtimeProvider(props: any) {
       userId,
       user,
       convos,
+      conts,
    };
 
    return <realtimeContext.Provider value={value} {...props} />;
