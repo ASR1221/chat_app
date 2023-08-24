@@ -46,9 +46,9 @@ export default function Search() {
 
    return <div>
       {
-         !users && conts && conts.length > 0 && <div>
+         !users && contacts && contacts.length > 0 && <div>
             {
-               conts.map(cont => <Link href={`/user/contacts/${cont.users[0].id}`} key={cont.users[0].id}>
+               contacts.map(cont => <Link href={`/user/contacts/${cont.users[0].id}`} key={cont.users[0].id}>
                   <div>{cont.users[0].profile_img_url && <img src={cont.users[0].profile_img_url} alt={`${cont.users[0].full_name} profile image`} />}</div>
                   <p>{cont.users[0].full_name}</p>
                </Link>)
@@ -75,6 +75,9 @@ export default function Search() {
                </Link>)
             }
          </div>
+      }
+      {
+         isError && <p>Something went wrong. Please refresh the page.</p>
       }
    </div>
 }

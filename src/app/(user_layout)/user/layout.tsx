@@ -1,7 +1,5 @@
 "use client";
 
-// TODO: add links in search results
-// TODO: fix search contact and error display
 // TODO: handle error properly in RealtimeProvider
 
 import { type ReactNode, type KeyboardEvent, useState, useEffect } from "react";
