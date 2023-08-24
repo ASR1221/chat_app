@@ -145,7 +145,7 @@ export default function RealtimeProvider(props: any) {
          }
       );
 
-      if (!userId) throw new Error("Some thing went wrong. Please refresh the page.");
+      if (!userId) return;
 
       fetchAll();
       
