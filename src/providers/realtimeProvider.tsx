@@ -77,7 +77,7 @@ export default function RealtimeProvider(props: any) {
             `)
             .eq("id", userId);
 
-         if (!response.data) throw new Error("Some thing went wrong, please refresh the page.");
+         if (response.error || (response.data && response.data.length < 1)) throw new Error("Some thing went wrong. Please refresh the page.");
 
          // get the last 10 message of every convo
          const promises = response.data[0].conversations.map((conv) =>
@@ -89,7 +89,7 @@ export default function RealtimeProvider(props: any) {
                .limit(10)
          );
 
-         const response2 = await Promise.all(promises);
+         const response2 = await Promise.all(promises); // this should through an error if one of 
 
          const final = response.data[0].conversations.map(
             (conv, i) => ({
@@ -111,6 +111,8 @@ export default function RealtimeProvider(props: any) {
                last_seen
             )
          `).eq("user_id", userId);
+
+         if (response3.error) throw new Error("Some thing went wrong. Please refresh the page.");
 
          setUser({
             user_name: response.data[0].user_name,
@@ -139,18 +141,19 @@ export default function RealtimeProvider(props: any) {
       const { data: authListener } = clientSupabase.auth.onAuthStateChange(
          (event, session) => {
             setUserId(session?.user.id ?? null);
-            console.log("Auth state changed:" + event);
+            console.log("Auth state changed: " + event);
          }
       );
 
-      if (!userId) return;
+      if (!userId) throw new Error("Some thing went wrong. Please refresh the page.");
 
       fetchAll();
       
       const messagesChannel = clientSupabase.channel("allMessages")
          .on("postgres_changes", { event: '*', schema: 'public', table: 'messages' }, (payload) => {
             
-            console.log(payload);
+            if (payload.errors) throw new Error("Some thing went wrong. Please refresh the page.");
+
             const newMessage = payload.new as Message;
             
             if (payload.eventType === "UPDATE") {
@@ -206,7 +209,7 @@ export default function RealtimeProvider(props: any) {
       const convoChannel = clientSupabase.channel("allConversations")
          .on("postgres_changes", { event: '*', schema: 'public', table: 'conversation_user', filter: `user_id=eq.${userId}` }, (payload) => {
 
-            console.log(payload);
+            if (payload.errors) throw new Error("Some thing went wrong. Please refresh the page.");
             
             if (payload.eventType === "DELETE") {
                setConvos(convos.filter(c => c.id !== payload.old.conversation_id));
@@ -247,9 +250,6 @@ export default function RealtimeProvider(props: any) {
       };
 
    }, [userId]);
-
-
-
 
 
    const value = {
