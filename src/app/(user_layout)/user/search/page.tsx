@@ -1,10 +1,12 @@
 "use client";
 
-import { useRealtime } from "@/providers/realtimeProvider";
-import { User } from "@/types/supabaseTables";
-import { clientSupabase } from "@/utils/clientSupabase";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react";
+
+import { useRealtime } from "@/providers/realtimeProvider";
+import { clientSupabase } from "@/utils/clientSupabase";
+import { User } from "@/types/supabaseTables";
 
 export default function Search() {
 
@@ -46,31 +48,31 @@ export default function Search() {
       {
          !users && conts && conts.length > 0 && <div>
             {
-               conts.map(cont => <div key={cont.users[0].id}>
+               conts.map(cont => <Link href={`/user/contacts/${cont.users[0].id}`} key={cont.users[0].id}>
                   <div>{cont.users[0].profile_img_url && <img src={cont.users[0].profile_img_url} alt={`${cont.users[0].full_name} profile image`} />}</div>
                   <p>{cont.users[0].full_name}</p>
-               </div>)
+               </Link>)
             }
          </div>
       }
       {
          users && users.length > 0 && <div>
             {
-               users.map(user => <div key={user.id}>
+               users.map(user => <Link href={`/user/profile/${user.id}`} key={user.id}>
                   <div>{user.profile_img_url && <img src={user.profile_img_url} alt={`${user.full_name} profile image`} />}</div>
                   <p>{user.full_name}</p>
                   <p>{user.user_name}</p>
-               </div>)
+               </Link>)
             }
          </div>
       }
       {
          !users && conversations && conversations.length > 0 && <div>
             {
-               conversations.map(conversation => <div key={conversation.id}>
+               conversations.map(conversation => <Link href={`/user/conversation/${conversation.id}`} key={conversation.id}>
                   <div>{conversation.group_img_url && <img src={conversation.group_img_url} alt={`${conversation.name} group image`} />}</div>
                   <p>{conversation.name}</p>
-               </div>)
+               </Link>)
             }
          </div>
       }
