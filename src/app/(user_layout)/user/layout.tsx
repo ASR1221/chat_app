@@ -3,6 +3,7 @@
 // TODO: add links in search results
 // TODO: fix links in login pages
 // TODO: fix search contact and error display
+// TODO: handle error properly in RealtimeProvider
 
 import { type ReactNode, type KeyboardEvent, useState, useEffect } from "react";
 import Link from "next/link";
@@ -49,7 +50,7 @@ export default function UserLayout({ children }: { children: ReactNode }) {
       };
 
    }, [isDialogOpen]);
-   
+
 
    return <>
       <nav className="flex justify-between p-3 bg-slate-400">
