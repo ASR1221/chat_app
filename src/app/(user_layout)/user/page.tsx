@@ -1,6 +1,6 @@
 "use client";
 
-import ConversationsComp from "../../components/conversation/conversationsComp";
+import ConversationsComp from "../../../components/conversation/conversationsComp";
 import { useRealtime } from "@/providers/realtimeProvider";
 
 export default function Conversations() {

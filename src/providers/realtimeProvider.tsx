@@ -21,6 +21,8 @@ export const realtimeContext = createContext<{
    user: OUser,
    convos: Convo[],
    conts: Contact[],
+   setConts: (conts: Contact[]) => void,
+   setConvos: (convos: Convo[]) => void,
 }>({
    userId: "",
    user: {
@@ -30,7 +32,9 @@ export const realtimeContext = createContext<{
       user_name: "",
    },
    convos: [],
-   conts: []
+   conts: [],
+   setConts: () => {},
+   setConvos: () => {},
 });
 
 export default function RealtimeProvider(props: any) {
@@ -253,6 +257,8 @@ export default function RealtimeProvider(props: any) {
       user,
       convos,
       conts,
+      setConts,
+      setConvos,
    };
 
    return <realtimeContext.Provider value={value} {...props} />;
