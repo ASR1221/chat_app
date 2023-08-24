@@ -1,7 +1,6 @@
 "use client";
 
 // TODO: add links in search results
-// TODO: fix links in login pages
 // TODO: fix search contact and error display
 // TODO: handle error properly in RealtimeProvider
 

@@ -23,7 +23,7 @@ export default function LogIn() {
          return;
       }
 
-      push(`/user/${data.user.id}`);
+      push("/user");
    }
 
    return (
