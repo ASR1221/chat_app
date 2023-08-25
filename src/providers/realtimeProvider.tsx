@@ -90,7 +90,7 @@ export default function RealtimeProvider(props: any) {
          );
 
          const response2 = await Promise.all(promises); // this should through an error if one of 
-         console.log(response2)
+
          const final = response.data[0].conversations.map(
             (conv, i) => ({
                ...conv,
@@ -131,7 +131,7 @@ export default function RealtimeProvider(props: any) {
    }
 
 
-   function addNewMessages(payload: any) {
+   function handleMessagesChanges(payload: any) {
          
       if (payload.errors) throw new Error("Some thing went wrong. Please refresh the page.");
 
@@ -160,18 +160,20 @@ export default function RealtimeProvider(props: any) {
       }
 
       if (payload.eventType === "DELETE") {
-         
          setConvos(prev => {
             const updated = prev.map(c => {
 
-               if (c.id === payload.old.conversation_id) {
-                  const updatedMessages = c.messages?.filter(message => message.id !== payload.old.id) ?? [];
-                  return { ...c, messages: updatedMessages };
-               }
-   
-               return c;
+               const updatedMessages = c.messages?.flatMap(message => {
+                  if (message.id === payload.old.id)
+                     return [];
+
+                  return message;
+               });
+
+               return { ...c, messages: updatedMessages ?? [] };
             });
-            return updated
+   
+            return updated;
          });
       }
 
@@ -253,7 +255,7 @@ export default function RealtimeProvider(props: any) {
       fetchAll();
       
       const messagesChannel = clientSupabase.channel("allMessages")
-         .on("postgres_changes", { event: '*', schema: 'public', table: 'messages' }, addNewMessages).subscribe()
+         .on("postgres_changes", { event: '*', schema: 'public', table: 'messages' }, handleMessagesChanges).subscribe()
       
       const convoChannel = clientSupabase.channel("allConversations")
          .on("postgres_changes", { event: '*', schema: 'public', table: 'conversation_user', filter: `user_id=eq.${userId}` }, addNewConvo).subscribe()
