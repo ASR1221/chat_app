@@ -85,12 +85,12 @@ export default function RealtimeProvider(props: any) {
                .from("messages")
                .select()
                .eq("conversation_id", conv.id)
-               .order("created_at", { ascending: false })
+               .order("created_at", { ascending: true })
                .limit(10)
          );
 
          const response2 = await Promise.all(promises); // this should through an error if one of 
-
+         console.log(response2)
          const final = response.data[0].conversations.map(
             (conv, i) => ({
                ...conv,
