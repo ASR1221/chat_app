@@ -17,7 +17,7 @@ export default function ConversationsComp({ conversations, userId }: { conversat
 
    function deiplayShortMessage(text: string | null | undefined) {
       if (!text) return "No message";
-      if (text.length > 17) return text.slice(15) + "...";
+      if (text.length > 23) return text.slice(0, 20) + "...";
       return text;
    }
 
