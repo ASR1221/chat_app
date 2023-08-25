@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useRef, Fragment } from "react";
+import { useEffect, useMemo, useRef, useState, Fragment, type KeyboardEvent } from "react";
 
 import { useRealtime } from "@/providers/realtimeProvider";
 import { clientSupabase } from "@/utils/clientSupabase";
@@ -10,15 +10,31 @@ import Message from "@/components/messages/message";
 
 export default function Conversation() {
 
+   const [inputValue, setInputValue] = useState('');
+   const [isError, setIsError] = useState(false);
+
    const containerRef = useRef<HTMLDivElement | null>(null);
    const fetchNumberRef = useRef(1)
 
-   const conversationId = useParams().conversationId;
+   const conversationId = useParams().conversationId as string;
    const { convos, setConvos, userId } = useRealtime();
 
    const conversation = useMemo(() => {
       return convos.find(conv => conv.id === conversationId);
    }, [convos, conversationId]);
+
+
+   async function handleSendMessage(e: KeyboardEvent<HTMLInputElement>) {
+      if (e.key === "Enter" && e.currentTarget.value && conversationId) {
+         const response = await clientSupabase.from("messages").insert([{
+            body: inputValue,
+            sender_id: userId,
+            conversation_id: conversationId,
+         }]);
+         if (response.error) setIsError(true);
+         else setInputValue('');
+      }
+   }
 
    useEffect(() => {
       // TODO: check if there are 10 messages, then fetch more
@@ -83,6 +99,13 @@ export default function Conversation() {
       }
       
 
-      {/* input */}
+      <div className="fixed bottom-0 w-full p-1 border-t-2 border-black">
+         <input
+            type="text"
+            className=" w-full p-1 border-2 border-blue-600" onKeyDown={handleSendMessage}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+         />
+      </div>
    </div>
 }
