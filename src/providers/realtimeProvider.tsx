@@ -131,8 +131,111 @@ export default function RealtimeProvider(props: any) {
    }
 
 
+   function addNewMessages(payload: any) {
+         
+      if (payload.errors) throw new Error("Some thing went wrong. Please refresh the page.");
+
+      const newMessage = payload.new as Message;
+      
+      if (payload.eventType === "UPDATE") {
+         
+         setConvos(prev => {
+            const updated = prev.map(c => {
+
+               if (c.id === newMessage.conversation_id) {
+                  const m = c.messages?.map(message => {
+                     if (message.id === newMessage.id) return newMessage;
+   
+                     return message;
+                  }) ?? null;
+                  
+                  return { ...c, messages: m };
+               };
+   
+               return c;
+            });
+            return updated;
+         });
+         
+      }
+
+      if (payload.eventType === "DELETE") {
+         
+         setConvos(prev => {
+            const updated = prev.map(c => {
+
+               if (c.id === payload.old.conversation_id) {
+                  const updatedMessages = c.messages?.filter(message => message.id !== payload.old.id) ?? [];
+                  return { ...c, messages: updatedMessages };
+               }
+   
+               return c;
+            });
+            return updated
+         });
+      }
+
+      if (payload.eventType === "INSERT") {
+         
+         setConvos(prev => {
+            const updated = prev.map(c => {
+
+               if (c.id === newMessage.conversation_id) {
+                  const m = c.messages ?? [];
+                  m.push(newMessage);
+                  return { ...c, messages: m };
+               };
+   
+               return c;
+            });
+            return updated;
+         });
+      }
+
+   }
+
+
+   function addNewConvo(payload: any) {
+      if (payload.errors) throw new Error("Some thing went wrong. Please refresh the page.");
+            
+      if (payload.eventType === "DELETE") {
+         setConvos(prev => prev.filter(c => c.id !== payload.old.conversation_id));
+      }
+      
+      if (payload.eventType === "INSERT") {
+         const newConvo = payload.new as ConversationUser;
+
+         clientSupabase.from("conversations").select(`
+            id,
+            name,
+            owner_id,
+            group_img_url,
+            users!conversation_user (
+               id,
+               user_name,
+               full_name,
+               bio,
+               profile_img_url
+            ),
+            messages (*)
+         `).eq("id", newConvo.conversation_id)
+            .then(response => {
+               
+               if (response.error) throw new Error(response.error.message);
+               
+               if (response.data && response.data.length > 0) 
+                  setConvos(prev => {
+                     const updated = prev;
+                     updated.push(response.data[0])
+                     return updated;
+                  });
+            });
+      }
+   }
+
 
    useEffect(() => {
+
 
       clientSupabase.auth.getSession().then(({ data: { session } }) => {
          setUserId(session?.user.id ?? null);
@@ -150,98 +253,10 @@ export default function RealtimeProvider(props: any) {
       fetchAll();
       
       const messagesChannel = clientSupabase.channel("allMessages")
-         .on("postgres_changes", { event: '*', schema: 'public', table: 'messages' }, (payload) => {
-            
-            if (payload.errors) throw new Error("Some thing went wrong. Please refresh the page.");
-
-            const newMessage = payload.new as Message;
-            
-            if (payload.eventType === "UPDATE") {
-               const updated = convos.map(c => {
-
-                  if (c.id === newMessage.conversation_id) {
-                     const m = c.messages?.map(message => {
-                        if (message.id === newMessage.id) return newMessage;
-
-                        return message;
-                     }) ?? null;
-                     
-                     return { ...c, messages: m };
-                  };
-
-                  return c;
-               });
-
-               setConvos(updated);
-               
-            }
-
-            if (payload.eventType === "DELETE") {
-               const updated = convos.map(c => {
-
-                  if (c.id === payload.old.conversation_id) {
-                     c.messages?.filter(message => message.id !== payload.old.id);
-                  }
-
-                  return c;
-               });
-
-               setConvos(updated);
-            }
-
-            if (payload.eventType === "INSERT") {
-               const updated = convos.map(c => {
-
-                  if (c.id === newMessage.conversation_id) {
-                     const m = c.messages ?? [];
-                     m.push(newMessage);
-                     return { ...c, messages: m };
-                  };
-
-                  return c;
-               });
-
-               setConvos(updated);
-            }
-
-         }).subscribe()
+         .on("postgres_changes", { event: '*', schema: 'public', table: 'messages' }, addNewMessages).subscribe()
       
       const convoChannel = clientSupabase.channel("allConversations")
-         .on("postgres_changes", { event: '*', schema: 'public', table: 'conversation_user', filter: `user_id=eq.${userId}` }, (payload) => {
-
-            if (payload.errors) throw new Error("Some thing went wrong. Please refresh the page.");
-            
-            if (payload.eventType === "DELETE") {
-               setConvos(convos.filter(c => c.id !== payload.old.conversation_id));
-            }
-            
-            if (payload.eventType === "INSERT") {
-               const newConvo = payload.new as ConversationUser;
-
-               clientSupabase.from("conversations").select(`
-                  id,
-                  name,
-                  owner_id,
-                  group_img_url,
-                  users!conversation_user (
-                     id,
-                     user_name,
-                     full_name,
-                     bio,
-                     profile_img_url
-                  ),
-                  messages (*)
-               `).eq("id", newConvo.conversation_id)
-                  .then(response => {
-                     const updated = convos;
-                     if (response.error) throw new Error(response.error.message);
-                     if (response.data) updated.push(response.data[0]);
-
-                     setConvos(updated);
-                  });
-            }
-
-         }).subscribe()
+         .on("postgres_changes", { event: '*', schema: 'public', table: 'conversation_user', filter: `user_id=eq.${userId}` }, addNewConvo).subscribe()
 
       return () => {
          authListener.subscription.unsubscribe();

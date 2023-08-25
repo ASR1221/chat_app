@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, Fragment } from "react";
 
 import { useRealtime } from "@/providers/realtimeProvider";
 import { clientSupabase } from "@/utils/clientSupabase";
@@ -67,10 +67,10 @@ export default function Conversation() {
       {
          conversation?.messages?.map((msg, i) => {
             
-            return <>
+            return <Fragment key={i}>
                {(i+1) % fetchNumberRef.current === 0 && <div ref={containerRef}></div>}
                <Message
-                  key={msg.id}
+                  id={msg.id}
                   body={msg.body}
                   file_url={msg.file_url}
                   time={msg.created_at}
@@ -78,7 +78,7 @@ export default function Conversation() {
                   sender_id={msg.sender_id}
                   userId={userId}
                />
-            </>
+            </Fragment>
          })
       }
       
