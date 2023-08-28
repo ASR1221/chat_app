@@ -9,7 +9,11 @@ type OUser = Omit<User, "id" | "created_at" | "last_seen">;
 
 export type Convo = Omit<Conversation, "created_at"> & {
    messages: Message[] | null,
-   users: Omit<User, "created_at" | "last_seen">[],
+   users: Array<Omit<User, "created_at" | "last_seen"> & {
+      is_owner: {
+         is_owner: boolean,
+      }[],
+   }>
 };
 
 type Contact = {
@@ -61,47 +65,27 @@ export default function RealtimeProvider(props: any) {
                full_name,
                bio,
                profile_img_url,
-               conversations!conversation_user (
+               conversations(
                   id,
                   name,
-                  owner_id,
                   group_img_url,
-                  users!conversation_user (
+                  users(
                      id,
                      user_name,
                      full_name,
                      bio,
-                     profile_img_url
-                  )
+                     profile_img_url,
+                     is_owner:conversation_user(is_owner)
+                  ),
+                  messages(*)
                )
             `)
-            .eq("id", userId);
+            .eq("id", userId)
+            .limit(10, { foreignTable: 'conversations.messages' });
 
          if (response.error || (response.data && response.data.length < 1)) throw new Error("Some thing went wrong. Please refresh the page.");
 
-         // get the last 10 message of every convo
-         const promises = response.data[0].conversations.map((conv) =>
-            clientSupabase
-               .from("messages")
-               .select()
-               .eq("conversation_id", conv.id)
-               .order("created_at", { ascending: true })
-               .limit(10)
-         );
-
-         const response2 = await Promise.all(promises); // this should through an error if one of 
-
-         const final = response.data[0].conversations.map(
-            (conv, i) => ({
-               ...conv,
-               messages: response2[i].data?.flatMap(d => {
-                  if (d.conversation_id === conv.id) return d
-                  return [];
-               }) ?? null
-            })
-         );
-
-         const response3 = await clientSupabase.from("user_contact").select(`
+         const response2 = await clientSupabase.from("user_contact").select(`
             users!contact_id (
                id,
                user_name,
@@ -112,7 +96,7 @@ export default function RealtimeProvider(props: any) {
             )
          `).eq("user_id", userId);
 
-         if (response3.error) throw new Error("Some thing went wrong. Please refresh the page.");
+         if (response2.error) throw new Error("Some thing went wrong. Please refresh the page.");
 
          setUser({
             user_name: response.data[0].user_name,
@@ -121,9 +105,9 @@ export default function RealtimeProvider(props: any) {
             profile_img_url: response.data[0].profile_img_url,
          });
 
-         setConvos(final);
+         setConvos(response.data[0].conversations);
 
-         setConts(response3.data)
+         setConts(response2.data)
 
       } catch (e: any) {
          throw new Error(e.message);
@@ -210,16 +194,16 @@ export default function RealtimeProvider(props: any) {
          clientSupabase.from("conversations").select(`
             id,
             name,
-            owner_id,
             group_img_url,
-            users!conversation_user (
+            users(
                id,
                user_name,
                full_name,
                bio,
-               profile_img_url
+               profile_img_url,
+               is_owner:conversation_user(is_owner)
             ),
-            messages (*)
+            messages(*)
          `).eq("id", newConvo.conversation_id)
             .then(response => {
                
@@ -228,7 +212,9 @@ export default function RealtimeProvider(props: any) {
                if (response.data && response.data.length > 0) 
                   setConvos(prev => {
                      const updated = prev;
-                     updated.push(response.data[0])
+                     console.log(prev)
+                     console.log(response.data[0])
+                     updated.push(response.data[0]);
                      return updated;
                   });
             });

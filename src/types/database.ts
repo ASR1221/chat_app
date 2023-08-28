@@ -12,14 +12,17 @@ export interface Database {
       conversation_user: {
         Row: {
           conversation_id: string
+          is_owner: boolean
           user_id: string
         }
         Insert: {
           conversation_id: string
+          is_owner?: boolean
           user_id: string
         }
         Update: {
           conversation_id?: string
+          is_owner?: boolean
           user_id?: string
         }
         Relationships: [
@@ -39,34 +42,24 @@ export interface Database {
       }
       conversations: {
         Row: {
-          created_at: string | null
+          created_at: string
           group_img_url: string | null
           id: string
           name: string
-          owner_id: string
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           group_img_url?: string | null
           id?: string
           name: string
-          owner_id: string
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           group_img_url?: string | null
           id?: string
           name?: string
-          owner_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "conversations_owner_id_fkey"
-            columns: ["owner_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       messages: {
         Row: {
