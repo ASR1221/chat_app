@@ -80,6 +80,7 @@ export default function AddConvo() {
          push(`/user/conversation/${convoResponse.data[0].id}`);
          
       } catch (error) {
+         setIsError(true);
          if (info.imagePath)
             await clientSupabase
                .storage
