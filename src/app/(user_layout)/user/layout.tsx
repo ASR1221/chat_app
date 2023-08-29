@@ -60,7 +60,7 @@ export default function UserLayout({ children }: { children: ReactNode }) {
                <input type="search" name="search" onKeyDown={handleSearch} className="border-2 border-black" placeholder="search..."/>
             </>
             : pathname.includes("/user/conversation/") ? <>
-               <button onClick={() => router.back()}>Back</button>
+               <Link href="/user">Back</Link>
                <p>{convos && convos.find(conv => conv.id === params.conversationId)?.name}</p>
                <button>Info</button>
             </> : ""
