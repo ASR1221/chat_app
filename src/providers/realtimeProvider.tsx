@@ -212,8 +212,6 @@ export default function RealtimeProvider(props: any) {
                if (response.data && response.data.length > 0) 
                   setConvos(prev => {
                      const updated = prev;
-                     console.log(prev)
-                     console.log(response.data[0])
                      updated.push(response.data[0]);
                      return updated;
                   });
