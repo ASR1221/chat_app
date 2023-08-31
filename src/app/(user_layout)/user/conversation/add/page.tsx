@@ -34,15 +34,17 @@ export default function AddConvo() {
 
          info.imagePath = fileResponse.data?.path;
          const imageURL = `https://mhlqhssqzsezzhgonlxp.supabase.co/storage/v1/object/public/chat/${info.imagePath}`;
+         info.convoId = crypto.randomUUID();
 
          const convoResponse = await clientSupabase.from("conversations")
-            .insert([{
+            .insert({
+               id: info.convoId,
                name: e.target[1].value,
                group_img_url: info.imagePath ? imageURL : null,
-            }]).select();
+            });
          
          // if error delete image
-         if (convoResponse.error || !convoResponse.data[0].id) {
+         if (convoResponse.error) {
             if (info.imagePath)
                await clientSupabase
                   .storage
@@ -53,15 +55,13 @@ export default function AddConvo() {
             return;
          };
 
-         info.convoId = convoResponse.data[0].id;
-
          // insert to conversation_user // TODO: should insert other users to
          const convoUserResponse = await clientSupabase.from("conversation_user")
-            .insert([{
+            .insert({
                user_id: userId,
-               conversation_id: convoResponse.data[0].id,
+               conversation_id: info.convoId,
                is_owner: true,
-            }]);
+            });
                
          // if error delete image and conversation
          if (convoUserResponse.error) {
@@ -71,13 +71,13 @@ export default function AddConvo() {
                   .from("chat")
                   .remove([info.imagePath]);
             
-            await clientSupabase.from("conversations").delete().eq("id", convoResponse.data[0].id);
+            await clientSupabase.from("conversations").delete().eq("id", info.convoId);
             
             setIsError(true);
             return;
          }
 
-         push(`/user/conversation/${convoResponse.data[0].id}`);
+         push(`/user/conversation/${info.convoId}`);
          
       } catch (error) {
          setIsError(true);

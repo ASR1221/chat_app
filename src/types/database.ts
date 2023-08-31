@@ -12,16 +12,19 @@ export interface Database {
       conversation_user: {
         Row: {
           conversation_id: string
+          created_at: string
           is_owner: boolean
           user_id: string
         }
         Insert: {
           conversation_id: string
+          created_at?: string
           is_owner?: boolean
           user_id: string
         }
         Update: {
           conversation_id?: string
+          created_at?: string
           is_owner?: boolean
           user_id?: string
         }
@@ -171,7 +174,31 @@ export interface Database {
       }
     }
     Views: {
-      [_ in never]: never
+      check_owner: {
+        Row: {
+          "?column?": number | null
+        }
+        Relationships: []
+      }
+      user_convos: {
+        Row: {
+          conversation_id: string | null
+        }
+        Insert: {
+          conversation_id?: string | null
+        }
+        Update: {
+          conversation_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_user_conversation_id_fkey"
+            columns: ["conversation_id"]
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Functions: {
       [_ in never]: never

@@ -7,6 +7,10 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { useRealtime } from "@/providers/realtimeProvider";
 import OptionsModal from "@/components/optionsModal/optionsModal";
 
+// TODO: make create convos with accept multiple users
+// TODO: check if realtime needed for 'conversations'
+// TODO: check how to show online status of a user
+
 export default function UserLayout({ children }: { children: ReactNode }) {
 
    const pathname = usePathname();
