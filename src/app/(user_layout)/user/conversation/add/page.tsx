@@ -25,7 +25,7 @@ export default function AddConvo() {
       try {
          
          const fileResponse = await clientSupabase.storage.from("chat")
-            .upload(`profile_images/${Date.now()}-${e.target[0].files[0].name}`, e.target[0].files[0]);
+            .upload(`group_images/${Date.now()}-${e.target[0].files[0].name}`, e.target[0].files[0]);
          
          if (fileResponse.error) {
             setIsError(true);
