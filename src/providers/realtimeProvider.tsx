@@ -5,7 +5,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import type { Message, ConversationUser, User, Conversation } from "@/types/supabaseTables";
 import { clientSupabase } from "@/utils/clientSupabase";
 
-type OUser = Omit<User, "id" | "created_at" | "last_seen">;
+export type OUser = Omit<User, "id" | "created_at" | "last_seen">;
 
 export type Convo = Omit<Conversation, "created_at"> & {
    messages: Message[] | null,
