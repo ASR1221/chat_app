@@ -65,8 +65,9 @@ export default function UserLayout({ children }: { children: ReactNode }) {
             </>
             : pathname.includes("/user/conversation/") ? <>
                <Link href="/user">Back</Link>
-               <p>{convos && convos.find(conv => conv.id === params.conversationId)?.name}</p>
-               <button>Info</button>
+               {pathname !== "/user/conversation/add" && <p>{convos && convos.find(conv => conv.id === params.conversationId)?.name}</p>}
+               {pathname !== "/user/conversation/add" && !pathname.includes("/info")
+                  ? <Link href={`/user/conversation/${params.conversationId}/info`}>Info</Link> : <div className="w-7"></div>}
             </> : ""
          }
       </nav>

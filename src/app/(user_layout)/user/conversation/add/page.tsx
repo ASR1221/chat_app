@@ -128,7 +128,7 @@ export default function AddConvo() {
                   <input type="checkbox" name="selected" onChange={(e) => handleCheckedContact(e, cont.users)} />
                </div>
                <div>
-                  {cont.users.profile_img_url && <img src={cont.users.profile_img_url} alt={`${cont.users.profile_img_url} profile image`} />}
+                  {cont.users.profile_img_url && <img src={cont.users.profile_img_url} alt={`${cont.users.user_name} profile image`} />}
                </div>
                <div>
                   <p>{cont.users.full_name}</p>
