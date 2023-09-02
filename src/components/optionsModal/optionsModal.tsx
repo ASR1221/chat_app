@@ -1,13 +1,16 @@
 "use client";
 
-import { clientSupabase } from "@/utils/clientSupabase";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 
-export default function OptionsModal({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: (isOpen: boolean) => void }) {
+import { clientSupabase } from "@/utils/clientSupabase";
+
+export default function OptionsModal() {
    
-   const { back, push } = useRouter();
+   const { push } = useRouter();
+   const optionsParam = useSearchParams();
+   const mRef = useRef<HTMLDialogElement | null>(null);
 
    async function handleSignOut() {
       const response = await clientSupabase.auth.signOut();
@@ -16,12 +19,16 @@ export default function OptionsModal({ isOpen, setIsOpen }: { isOpen: boolean, s
    }
 
    useEffect(() => {
+
+      if (optionsParam.get("options") === "true") mRef.current?.showModal();
+      else mRef.current?.close();
+
       function handleWindowClick(e: MouseEvent) {
 
          const x = e.target as HTMLElement;
 
-         if ((x.id !== "ShowDialogBtn" && isOpen) && x.nodeName !== "DIALOG") {
-            back();
+         if (x.childNodes[0].nodeName === "UL") {
+            push("/user");
          }
       }
 
@@ -29,10 +36,10 @@ export default function OptionsModal({ isOpen, setIsOpen }: { isOpen: boolean, s
 
       () => removeEventListener("click", handleWindowClick);
 
-   }, [isOpen]);
+   }, [optionsParam]);
 
-   return <dialog open={isOpen}
-      className="absolute left-8 top-9 m-0 px-2 border-2 border-black bg-white rounded-md rounded-ss-none backdrop:bg-black"
+   return <dialog /* open={isOpen} */ ref={mRef}
+      className="absolute left-8 top-9 m-0 px-2 border-2 border-black bg-white rounded-md rounded-ss-none backdrop:bg-black/50"
    >
       <ul>
          <li className="border-b-2 border-black/75 py-1 px-1 hover:bg-slate-100"><Link href="/user/profile">Profile</Link></li>

@@ -1,8 +1,8 @@
 "use client";
 
-import { type ReactNode, type KeyboardEvent, useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
+import { type ReactNode, type KeyboardEvent, useState, useEffect } from "react";
 
 import { useRealtime } from "@/providers/realtimeProvider";
 import OptionsModal from "@/components/optionsModal/optionsModal";
@@ -23,41 +23,14 @@ export default function UserLayout({ children }: { children: ReactNode }) {
       if (e.key === "Enter") router.push(`/user/search?term=${e.currentTarget.value}`)
    }
 
-   // handle dialog open and close
-   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-   function handleOpenDialog() {
-      if (!isDialogOpen) {
-         setIsDialogOpen(true);
-         window.history.pushState("open", "");
-      } else {
-         setIsDialogOpen(false);
-      }
-   }
-
-   useEffect(() => {
-      function handlePopstate(e: PopStateEvent) {
-         if (isDialogOpen) {
-            setIsDialogOpen(false);
-         }
-      };
-
-      window.addEventListener("popstate", handlePopstate);
-  
-      return () => {
-         window.removeEventListener('popstate', handlePopstate);
-      };
-
-   }, [isDialogOpen]);
-
 
    return <>
       <nav className="flex justify-between p-3 bg-slate-400">
          {
             pathname === "/user" ? <>
-               <button id="ShowDialogBtn" onClick={handleOpenDialog}>Options</button>
+               <button onClick={() => router.push("/user?options=true")}>Options</button>
                <p role="heading" aria-level={2} className="text-lg">App name</p>
-               <Link href="/user/search" className={`${isDialogOpen && "pointer-events-none"}`}>search</Link>
+               <Link href="/user/search">search</Link>
             </>
             : pathname === "/user/search" ? <>
                <button onClick={() => router.back()}>Back</button>
@@ -71,7 +44,7 @@ export default function UserLayout({ children }: { children: ReactNode }) {
             </> : ""
          }
       </nav>
-      <OptionsModal isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
-      <div className={`${isDialogOpen && "pointer-events-none"}`}>{children}</div>
+      <OptionsModal />
+      <div>{children}</div>
    </>
 }
