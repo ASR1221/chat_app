@@ -8,9 +8,17 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "primary-color": "var(--primary-color)",
-        "secondary-color": "var(--secondary-color)",
-        "details-color": "var(--details-color)",
+        "bg-color": "var(--bg-color)",
+        "text-color": "var(--text-color)",
+        "convo-header-bg-color": "var(--convo-header-bg-color)",
+        "convo-header-text-color": "var(--convo-header-text-color)",
+        "msg-own-bg-color": "var(--msg-own-bg-color)",
+        "msg-other-bg-color": "var(--msg-other-bg-color)",
+        "btn-color": "var(--btn-color)",
+        "btn-border-color": "var(--btn-border-color)",
+        "devider-line-color": "var(--devider-line-color)",
+        "red-color": "var(--red-color)",
+        "green-color": "var(--green-color)",
       }
     },
   },

@@ -3,17 +3,31 @@
 @tailwind utilities;
 
 :root {
-	/* Should be edited according to the final colors in the styles */
-	--primary-color: 0, 0, 0;
-	--econdary-color: 214, 219, 220;
-	--details-color: 255, 255, 255;
+	--bg-color: #fff;
+	--text-color: #000;
+	--convo-header-bg-color: #bbd0ff;
+	--convo-header-text-color: #0A578F;
+	--msg-own-bg-color: #E9F4FF;
+	--msg-other-bg-color: #fff;
+	--btn-color: #5EA4DB;
+	--btn-border-color: #0077B6;
+	--devider-line-color: #B4BACA;
+	--red-color: #EE0000;
+	--green-color: #00D415;
 }
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		/* Should be edited according to the final colors in the styles */
-		--primary-color: 0, 0, 0;
-		--econdary-color: 214, 219, 220;
-		--details-color: 255, 255, 255;
+		--bg-color: #090909;
+		--text-color: #fff;
+		--convo-header-bg-color: #161D2B;
+		--convo-header-text-color: #fff;
+		--msg-own-bg-color: #4C555D;
+		--msg-other-bg-color: #161D2B;
+		--btn-color: #5EA4DB;
+		--btn-border-color: #009BED;
+		--devider-line-color: #B4BACA;
+		--red-color: #EE0000;
+		--green-color: #00D415;
 	}
 }
