@@ -31,3 +31,11 @@
 		--green-color: #00D415;
 	}
 }
+
+h1, h2 {
+	font-family: var(--font-header);
+}
+
+h3, h4, h5, h6, p, span, div, input, a {
+	font-family: var(--font-body);
+}
