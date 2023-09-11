@@ -19,6 +19,13 @@ module.exports = {
         "devider-line-color": "var(--devider-line-color)",
         "red-color": "var(--red-color)",
         "green-color": "var(--green-color)",
+      },
+      fontFamily: {
+        "header": "var(--font-header)",
+        "body": "var(--font-body)",
+      },
+      boxShadow: {
+        "basic": "0px 1px 10px rgba(0,0,0,0.35)"
       }
     },
   },
