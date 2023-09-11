@@ -29,12 +29,18 @@ export default function ComoleteSignUp() {
       push(`/signup/info?userId=${data.user?.id}`);
    }
 
-   return (
-      <form onSubmit={handleSubmit}>
-         <input className="mt-1 mb-3 p-1 border-2 border-black" placeholder="######" type="text" name="token" pattern="^\d+${6}" />
-         <button type="submit"  className="py-1 px-2 bg-black hover:bg-black/80 text-white sm:ml-5">Check</button>
+   return <>
+      <p className="my-3">An email containing a verification code has been sent to you. Please write your verification code here </p>
+      <form onSubmit={handleSubmit} className="flex flex-col mx-auto max-w-sm">
+         <input
+            className="mt-1 mb-3 p-1 rounded-md border-[1px] border-black outline-none focus:border-btn-border-color active:border-btn-border-color"
+            type="text"
+            name="token"
+            pattern="^\d+${6}"
+         />
+         <button type="submit" className="w-20 p-1 bg-btn-color rounded-md border-[1px] hover:border-btn-border-color">Check</button>
 
-         <p className="text-red-600">{message}</p>
+         <p className="text-red-color">{message}</p>
       </form>
-   );
+   </>;
 }

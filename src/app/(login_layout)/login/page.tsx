@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { BaseSyntheticEvent, useState } from "react";
 
 import { clientSupabase } from "@/utils/clientSupabase";
+import SignComp from "../signComp";
 
 export default function LogIn() {
    const { push } = useRouter();
@@ -26,15 +27,5 @@ export default function LogIn() {
       push("/user");
    }
 
-   return (
-      <form onSubmit={handleSubmit} className="flex flex-col">
-         <label className="block" htmlFor="email">Email: </label>
-         <input className="mt-1 mb-3 p-1 border-2 border-black" type="text" name="email_username" />
-         <label className="block" htmlFor="password">Password: </label>
-         <input className="mt-1 mb-3 p-1 border-2 border-black" type="text" name="password" />
-         <button type="submit" className="p-1 bg-black hover:bg-black/80 text-white">Log In</button>
-
-         <p className="text-red-600">{message}</p>
-      </form>
-   );
+   return <SignComp handleSubmit={handleSubmit} errorMessage={message} type="Log In" />;
 }
