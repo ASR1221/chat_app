@@ -1,7 +1,7 @@
-function SendIcon({ isDark }: { isDark: boolean }) {
+function SendIcon({ isDark, width }: { isDark: boolean, width: number }) {
    return <svg
-      width="19.077589mm"
-      height="14.658999mm"
+      width={`${width}px`}
+      height={`${width * 0.7683884478}px`}
       viewBox="0 0 19.077589 14.658999"
       version="1.1"
       id="svg17786"

@@ -1,8 +1,8 @@
-function SearchIcon({ isDark }: { isDark: boolean }) {
+function SearchIcon({ isDark, width }: { isDark: boolean, width: number }) {
    
    return <svg
-      width="11.51075mm"
-      height="11.77533mm"
+      width={`${width}px`}
+      height={`${width}px`}
       viewBox="0 0 11.51075 11.77533"
       version="1.1"
       id="svg5"

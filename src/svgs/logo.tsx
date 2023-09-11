@@ -1,8 +1,8 @@
-function Logo({ isDark }: { isDark: boolean }) {
+function Logo({ isDark, width }: { isDark: boolean, width: number}) {
    
    return <svg
-      width="9.7201252mm"
-      height="9.682971mm"
+      width={`${width}px`}
+      height={`${width}px`}
       viewBox="0 0 9.7201252 9.682971"
       version="1.1"
       id="svg5"

@@ -1,7 +1,7 @@
-function AttachmentIcon({ isDark }: { isDark: boolean }) {
+function AttachmentIcon({ isDark, width }: { isDark: boolean, width: number }) {
    return <svg
-      width="8.111372mm"
-      height="7.8795099mm"
+      width={`${width}px`}
+      height={`${width * 0.9714151811}px`}
       viewBox="0 0 8.111372 7.8795098"
       version="1.1"
       id="svg5"
