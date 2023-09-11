@@ -60,7 +60,7 @@ export default function Landing() {
             <h2 className="text-3xl ml-3">Chatty</h2>
          </div>
          <div className="flex justify-evenly">
-            <Link href="#footer" className="mr-3 py-1 px-2 text-sm rounded-md hover:bg-slate-500 transition-all duration-300">Contact Us</Link>
+            <Link href="#footer" className="mr-3 py-1 px-2 text-sm text-text-color rounded-md hover:bg-slate-500 transition-all duration-300">Contact Us</Link>
             <Link href="/login" className="py-1 px-2 bg-btn-color rounded-md text-sm hover:bg-btn-border-color transition-all duration-300">Log In</Link>
          </div>
       </nav>
@@ -84,8 +84,8 @@ export default function Landing() {
       </section>
       <section className="my-28 sm:px-[15%]">
          <center>
-            <h3 className="w-[75%] text-2xl mb-6 sm:text-4xl">Get in the website and start messaging now</h3>
-            <Link href="/login" className="py-1 px-2 bg-btn-color rounded-md text-md shadow-basic hover:bg-btn-border-color transition-all duration-300" >Log In</Link>
+            <h3 className="w-[75%] text-2xl mb-12 sm:text-4xl">Get in the website and start messaging now</h3>
+            <Link href="/login" className="py-1 px-2 bg-btn-color rounded-md text-md shadow-basic hover:bg-btn-border-color transition-all duration-300 sm:text-xl" >Log In</Link>
          </center>
       </section>
       <footer id="footer" className="p-5 border-t-[1px] border-text-color ">
