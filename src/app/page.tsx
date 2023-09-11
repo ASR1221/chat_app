@@ -56,7 +56,7 @@ export default function Landing() {
       <nav className="flex justify-between items-center py-3 px-4 border-b-[1px] border-text-color sm:px-[15%]">
          <div className="flex justify-evenly">
             <div>
-               <Logo isDark={isDark} width="38px" /* edit isDark later */ /> 
+               <Logo isDark={isDark} width={38} /* edit isDark later */ /> 
             </div>
             <h2 className="text-3xl ml-3">Chatty</h2>
          </div>
