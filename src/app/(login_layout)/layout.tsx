@@ -5,16 +5,18 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 import Logo from "@/svgs/logo";
+import useTheme from "@/hooks/useTheme";
 
 export default function Layout({ children }: { children: ReactNode }) {
  
    const path = usePathname();
+   const { isDark } = useTheme();
 
    return <div className={path === "/signup/verify" ? "mt-10" : "mt-20"}>
       <div className="w-fit mx-auto">
          {
             path === "/signup/verify" ? <img src="/images/illustrations/Key-rafiki.svg" alt="Key image" width={300}/>
-            : <Logo isDark={false} width={120} />
+            : <Logo isDark={isDark} width={120} />
          }
       </div>
       <h2 className="w-fit mx-auto my-10 text-4xl">{path === "/signup" ? "Sign Up" : path === "/login" ? "Log in" : "" }</h2>
