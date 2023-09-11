@@ -7,7 +7,6 @@ import Logo from "@/svgs/logo";
 
 export default function Landing() {
 
-   // TODO: responsive
    const [isDark, setIsDark] = useState(false);
 
    useEffect(() => {
@@ -34,7 +33,7 @@ export default function Landing() {
          if (elm) observer.observe(elm);
       });
 
-      const mutationObserver = new MutationObserver((mutations, observer) => {
+      const mutationObserver = new MutationObserver((mutations) => {
          mutations.forEach(mutation => {
             if (mutation.attributeName === "data-theme") setIsDark(document.documentElement.getAttribute("data-theme") === "dark");
          })
