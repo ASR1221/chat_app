@@ -30,6 +30,15 @@
 	--green-color: #00D415;
 }
 
+html {
+	scroll-behavior: smooth;
+	background: var(--bg-color);
+}
+
+h1, h2, h3, h4, h5, h6, p, span, div, input, a {
+	color: var(--text-color);
+}
+
 h1, h2 {
 	font-family: var(--font-header);
 }
