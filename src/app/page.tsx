@@ -4,14 +4,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import Logo from "@/svgs/logo";
+import useTheme from "@/hooks/useTheme";
 
 export default function Landing() {
 
-   const [isDark, setIsDark] = useState(false);
+   const { isDark } = useTheme();
 
    useEffect(() => {
-
-      setIsDark(document.documentElement.getAttribute("data-theme") === "dark");
 
       const observers: IntersectionObserver[] = [];
    
@@ -33,21 +32,7 @@ export default function Landing() {
          if (elm) observer.observe(elm);
       });
 
-      const mutationObserver = new MutationObserver((mutations) => {
-         mutations.forEach(mutation => {
-            if (mutation.attributeName === "data-theme") setIsDark(document.documentElement.getAttribute("data-theme") === "dark");
-         })
-      });
-
-      mutationObserver.observe(document.documentElement, {
-         attributes: true,
-         attributeFilter: ["data-theme"]
-      });
-
-      () => {
-         mutationObserver.disconnect();
-         observers.forEach(observer => observer.disconnect());
-      }
+      () => observers.forEach(observer => observer.disconnect());
 
    }, []);
 
