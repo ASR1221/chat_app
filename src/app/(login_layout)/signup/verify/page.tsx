@@ -26,14 +26,14 @@ export default function ComoleteSignUp() {
          return;
       }
 
-      push(`/signup/info?userId=${data.user?.id}`);
+      push(`/info?userId=${data.user?.id}`);
    }
 
    return <>
       <p className="my-3">An email containing a verification code has been sent to you. Please write your verification code here </p>
       <form onSubmit={handleSubmit} className="flex flex-col mx-auto max-w-sm">
          <input
-            className="mt-1 mb-3 p-1 rounded-md border-[1px] border-black outline-none focus:border-btn-border-color active:border-btn-border-color"
+            className="mt-1 mb-3 p-1 rounded-md border-[1px] border-text-color outline-none focus:border-btn-border-color active:border-btn-border-color"
             type="text"
             name="token"
             pattern="^\d+${6}"
