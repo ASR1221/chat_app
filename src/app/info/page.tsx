@@ -37,7 +37,7 @@ export default function SignUpInfo() {
          return;
       }
 
-      push("/user");
+      push(`/user?userId=${userId}`);
    }
 
    return <div className="mt-20 mx-5">
