@@ -111,7 +111,7 @@ export default function ProfileImage() {
             {
                arr.map((x, i) => <button
                   key={i}
-                  className="rounded-md aspect-square overflow-hidden border-[1px] hover:border-black"
+                  className="rounded-md aspect-square overflow-hidden border-[1px] hover:border-text-color"
                   onClick={() => setImage(`/images/avatars/avatar-${i + 1}.svg`)}
                >
                   <img src={`/images/avatars/avatar-${i+1}.svg`} alt="avatar image" className="w-[100%] h-[100%]" />
