@@ -79,13 +79,14 @@ export default function ProfileImage() {
             <div className="grid grid-cols-1 gap-5">
                
                <button
-                  className="p-1 bg-red-color rounded-md hover:bg-red-700"
+                  type="button"
+                  className="p-1 bg-red-color rounded-md hover:bg-red-700 transition-all duration-300"
                   onClick={() => setImage(null)}
                >Remove</button>
                
                <label
                   htmlFor="image"
-                  className="p-1 bg-btn-color rounded-md hover:bg-btn-border-color cursor-pointer text-white text-center"
+                  className="p-1 bg-btn-color rounded-md hover:bg-btn-border-color cursor-pointer text-white text-center transition-all duration-300"
                >Upload
                   <input
                      type="file"
@@ -98,20 +99,21 @@ export default function ProfileImage() {
                </label>
 
                <button
-                  className="p-1 bg-green-color rounded-md hover:bg-green-700"
+                  className="p-1 bg-green-color rounded-md hover:bg-green-700 transition-all duration-300"
                   type="submit"
                >Save</button>
 
             </div>
          </div>
 
-         {error && <p className="w-[100%] p-3 pt-5 bg-bg-color border-b-[1px] border-devider-line-color text-red-color fixed top-0">{error}</p>}
+         {error && <p className="w-[90%] p-3 pt-5 bg-bg-color border-b-[1px] border-devider-line-color text-red-color fixed top-0">{error}</p>}
 
          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(7rem,100%),1fr))] gap-3 my-5">
             {
                arr.map((x, i) => <button
+                  type="button"
                   key={i}
-                  className="rounded-md aspect-square overflow-hidden border-[1px] hover:border-text-color"
+                  className="rounded-md aspect-square overflow-hidden hover:border-[1px] hover:border-text-color"
                   onClick={() => setImage(`/images/avatars/avatar-${i + 1}.svg`)}
                >
                   <img src={`/images/avatars/avatar-${i+1}.svg`} alt="avatar image" className="w-[100%] h-[100%]" />
