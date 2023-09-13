@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 export default function useTheme() {
 
    const [isDark, setIsDark] = useState(false);
+   const [themeType, setThemeType] = useState(0);  // force a rerender to theme choice
 
    useEffect(() => {
       setIsDark(document.documentElement.getAttribute("data-theme") === "dark");
@@ -24,17 +25,19 @@ export default function useTheme() {
       () => mutationObserver.disconnect();
    }, []);
 
-   function setTheme(theme: "light" | "dark" | "default") {
+   function setTheme(theme: "light" | "dark" | "system") {
 
-      if (theme === "default") {
+      if (theme === "system") {
          localStorage.removeItem("theme");
          const newTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
          document.documentElement.setAttribute("data-theme", newTheme ? "dark" : "light");
+         setThemeType(2);
       } else {
          localStorage.setItem("theme", theme);
          document.documentElement.setAttribute("data-theme", theme);
+         setThemeType(theme === "light" ? 0 : 1);
       }
    }
 
-   return { isDark, setTheme };
+   return { isDark, setTheme, themeType };
 }
