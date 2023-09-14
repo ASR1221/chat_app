@@ -9,6 +9,7 @@ import OptionsModal from "@/components/optionsModal/optionsModal";
 import ConversationsComp from "@/components/conversation/conversationsComp";
 import SearchIcon from "@/svgs/searchIcon";
 import useTheme from "@/hooks/useTheme";
+import OptionsIcon from "@/svgs/optionsIcon";
 
 // TODO: make create convos with accept multiple users
 // TODO: check if realtime needed for 'conversations'
@@ -33,15 +34,12 @@ export default function UserLayout({ children }: { children: ReactNode }) {
    return <>
       
       <nav className="grid grid-cols-[1fr_8fr_1fr] gap-5 items-center justify-between p-3 bg-convo-header-bg-color text-convo-header-text-color md:w-[370px]">
-         <button onClick={() => router.push("/user?options=true")} className="grid grid-cols-1 gap-2 justify-center items-center p-1 min-w-[40px] max-w-[45px]">
-            <div className="h-[2px] rounded-[2px] bg-convo-header-text-color"></div>
-            <div className="h-[2px] rounded-[2px] bg-convo-header-text-color"></div>
-            <div className="h-[2px] rounded-[2px] bg-convo-header-text-color"></div>
-         </button>
+         <OptionsIcon clickFunc={() => router.push("/user?options=true")}/>
          <h2 className="text-3xl text-convo-header-text-color">Chatty</h2>
          <Link href="/user/search"><SearchIcon isDark={isDark} width={25} /></Link>
       </nav>
       <OptionsModal />
+      
       <div className="px-4 md:w-[370px]">
          <ConversationsComp conversations={convos} userId={userId} />
       </div>
