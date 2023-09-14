@@ -16,9 +16,6 @@ export default function OptionsModal() {
    
    const [isThemeOpen, setIsthemeOpen] = useState(false);
    const { isDark, themeType, setTheme } = useTheme();
-   const theme = useMemo(() => {
-      return !localStorage.getItem("theme") ? "system" : isDark ? "dark" : "light";
-   }, [isDark])
    
    const [isLangOpen, setIsLangOpen] = useState(false);
 
@@ -90,7 +87,7 @@ export default function OptionsModal() {
             </button>
             
             {
-               <section className={`h-[${isThemeOpen ? "120px" : "0px"}] overflow-hidden transition-[height] ease-linear`}>
+               <section className={`${isThemeOpen ? "h-[120px]" : "h-[0]"} overflow-hidden transition-[height] ease-linear`}>
 
                   <button type="button" onClick={() => setTheme("light")} className="grid grid-cols-[1fr_2fr_4fr] items-center gap-2 p-2 cursor-pointer group">
                      <div className={`aspect-square rounded-full bg-text-color opacity-${themeType === 0 ? "1" : "0"}`}></div>
