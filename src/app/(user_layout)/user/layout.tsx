@@ -5,11 +5,12 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { type ReactNode, type KeyboardEvent, useState, useEffect } from "react";
 
 import { useRealtime } from "@/providers/realtimeProvider";
+import useTheme from "@/hooks/useTheme";
+
 import OptionsModal from "@/components/optionsModal/optionsModal";
 import ConversationsComp from "@/components/conversation/conversationsComp";
 import SearchIcon from "@/svgs/searchIcon";
-import useTheme from "@/hooks/useTheme";
-import OptionsIcon from "@/svgs/optionsIcon";
+import OptionsIcon from "@/components/optionsIcon/optionsIcon";
 
 // TODO: make create convos with accept multiple users
 // TODO: check if realtime needed for 'conversations'
@@ -51,7 +52,7 @@ export default function UserLayout({ children }: { children: ReactNode }) {
       <div
          className={`w-[100vw] z-10 bg-bg-color absolute top-0 bottom-0 ${pathname === "/user" ? "left-[100vw]" : "left-[0]"} transition-all md:w-[calc(100vw-370px)] md:left-[370px] md:border-l-[1px] md:border-devider-line-color`}
       >{children}</div>
-   </>
+   </>;
 }
 
 /* 
