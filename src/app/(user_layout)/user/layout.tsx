@@ -34,9 +34,9 @@ export default function UserLayout({ children }: { children: ReactNode }) {
 
    return <>
       
-      <nav className="grid grid-cols-[1fr_8fr_1fr] gap-5 items-center justify-between p-3 bg-convo-header-bg-color text-convo-header-text-color md:w-[370px]">
+      <nav className="grid grid-cols-[1fr_8fr_1fr] gap-5 items-center justify-between p-4 bg-convo-header-bg-color text-convo-header-text-color md:w-[370px]">
          <OptionsIcon clickFunc={() => router.push("/user?options=true")}/>
-         <h2 className="text-3xl text-convo-header-text-color">Chatty</h2>
+         <h2 className="text-4xl text-convo-header-text-color">Chatty</h2>
          <Link href="/user/search"><SearchIcon isDark={isDark} width={25} /></Link>
       </nav>
       <OptionsModal />
