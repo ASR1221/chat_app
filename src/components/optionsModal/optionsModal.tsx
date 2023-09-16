@@ -54,6 +54,7 @@ export default function OptionsModal() {
       }
 
       function handleWindowClick(e: MouseEvent) {
+         if (optionsParam.get("options") !== "true") return;
 
          const x = e.target as HTMLElement;
 
