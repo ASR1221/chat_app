@@ -51,7 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en" className={`${oregano.variable} ${laila.variable}`}>
-      <body className='overflow-x-hidden'>
+      <body className='overflow-x-hidden no-scrollbar'>
         {children}
       </body>
     </html>
