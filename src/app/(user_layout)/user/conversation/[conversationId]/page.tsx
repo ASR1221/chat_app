@@ -7,7 +7,6 @@ import {
    useMemo,
    useRef,
    useState,
-   Fragment,
    type BaseSyntheticEvent,
 } from "react";
 
@@ -33,9 +32,8 @@ export default function Conversation() {
    const [isError, setIsError] = useState(false);
 
    const containerRef = useRef<HTMLDivElement | null>(null);
-   const fetchNumberRef = useRef(1);
 
-   const { convos, setConvos, userId } = useRealtime();
+   const { convos, setConvos, userId, msgPlaceHolder, setMsgPlaceHolder } = useRealtime();
 
    const conversation = useMemo(() => {
       return convos.find(conv => conv.id === conversationId);
@@ -45,6 +43,9 @@ export default function Conversation() {
       e.preventDefault()
 
       let path: null | string = null;
+
+      setMsgPlaceHolder(p => [...p, {body: inputRef.current?.value.trim() ?? "", file_url: file ? URL.createObjectURL(file) : ""}])
+      
       if (file) {
          const response = await clientSupabase.storage.from("chat")
             .upload(`message_files/${Date.now()}-${file.name}`, file);
@@ -86,15 +87,23 @@ export default function Conversation() {
    useEffect(() => {
       // check if there are 10 messages, then fetch more
       async function getMoreMessages() {
+
+         if (!conversation?.messages && !conversation?.messages?.length) return;
+         if (conversation.messages.length === 10) {}
+         else if (conversation.messages.length % 50 !== 0) return;
+
+
+         const from = conversation?.messages?.length === 10 ? 11 : (conversation?.messages?.length / 50) + 1;
+         const to = conversation?.messages?.length === 10 ? 50 : (from + 49);
+
          clientSupabase.from("messages").select()
             .eq("conversation_id", conversationId)
-            .order("created_at")
-            .range(10 * fetchNumberRef.current, 50 * fetchNumberRef.current)
+            .order("created_at", { ascending: false })
+            .range(from, to)
             .then(response => {
                if (response.error) return;
-               if (response.data.length < 1) return;
 
-               fetchNumberRef.current++;
+               if (response.data.length < 1) return;
 
                const updated = conversation?.messages;
                response.data.map(d => updated?.unshift(d));
@@ -108,10 +117,6 @@ export default function Conversation() {
             });
       }
 
-      if (conversation?.messages && (conversation?.messages?.length < 10 || conversation?.messages?.length % 50 === 0)) return;
-
-      getMoreMessages();
-
       const observer = new IntersectionObserver(([entry]) => {
          if (entry.isIntersecting) {
             getMoreMessages();
@@ -124,7 +129,7 @@ export default function Conversation() {
          if (containerRef.current) observer.unobserve(containerRef.current);
       };
 
-   }, [conversationId]);
+   }, [conversationId, conversation]);
 
    return <div>
       {/* nav section */}
@@ -134,7 +139,7 @@ export default function Conversation() {
          } w-[100vw] md:w-[calc(100vw-370px)] md:left-[370px] bg-convo-header-bg-color text-convo-header-text-color h-[72px] isolate`}
       >
          <button type="button" onClick={() => push("/user")} className="pl-2">
-            <ArrowIcon isDark={isDark} width={25} />
+            <ArrowIcon isDark={isDark} width={20} />
          </button>
 
          <div className="grid grid-cols-[1fr_5fr] items-center gap-3">
@@ -157,32 +162,54 @@ export default function Conversation() {
       </nav>
 
       {/* Main messages section */}
-      <main className="py-20 overflow-y-scroll no-scrollbar px-3 grid grid-cols-1">
+      <main className="py-20 px-3 grid grid-cols-1">
+         <div ref={containerRef}></div>
          {conversation?.messages?.map((msg, i) => {
-            const msgPlacement = conversation.messages && conversation.messages[i + 1] ? (msg.sender_id === conversation.messages[i + 1].sender_id &&
-            Date.parse(conversation.messages[i + 1].created_at) - Date.parse(msg.created_at) < 120 ? "end" : "start") : "end";
-            
+            const isEnd = conversation.messages && conversation.messages[i + 1] ? !(msg.sender_id === conversation.messages[i + 1].sender_id &&
+               Date.parse(conversation.messages[i + 1].created_at) - Date.parse(msg.created_at) < 120 * 1000) : true;
+                        
             return !(msg.body || msg.file_url) ? null : <div key={i} className={`w-[100%] ${msg.sender_id !== userId && "grid grid-cols-[15%_83%] gap-2"}`}>
-               {fetchNumberRef.current !== 1 && (i + 1) % fetchNumberRef.current === 0 && <div ref={containerRef}></div>}
-               {
-                  msg.sender_id !== userId && <div className="rounded-sm overflow-hidden w-[100%] aspect-square">
+                  {
+                     msg.sender_id !== userId && <div className="rounded-sm overflow-hidden w-[100%] aspect-square">
+                        {
+                           isEnd && <img src={conversation.users.find(u => u.id === msg.sender_id)?.profile_img_url ?? ""} className="object-cover" />
+                        }
+                     </div>
+                  }
+                  <Message
+                     id={msg.id}
+                     body={msg.body}
+                     file_url={msg.file_url}
+                     time={msg.created_at}
+                     read_status={msg.read_status}
+                     sender_id={msg.sender_id}
+                     userId={userId}
+                     isEnd={isEnd}
+                  />
+               </div>;
+         })}
+         {
+            msgPlaceHolder && msgPlaceHolder.length > 0 && msgPlaceHolder.map((msg, i) => <div key={i} className="w-[100%]">
+                  <div className={`opacity-50 float-right bg-msg-own-bg-color min-w-[15%] max-w-[70%] border-[1px] ${isError ? "border-red-color" : "border-black"} rounded-lg overflow-hidden mb-3`}>
                      {
-                        msgPlacement === "end" && <img src={conversation.users.find(u => u.id === msg.sender_id)?.profile_img_url ?? ""} className="object-cover" />
+                        !msg.file_url ? null : <div>
+                           <Image
+                              src={msg.file_url}
+                              alt="message image"
+                              width={0}
+                              height={0}
+                              sizes="100vw"
+                              style={{ width: "100%", height: "100%" }}
+                           />
+                        </div>
+                     }
+                     {
+                        !msg.body ? null : <p className="p-1 text-sm">{ msg.body }</p>
                      }
                   </div>
-               }
-               <Message
-                  id={msg.id}
-                  body={msg.body}
-                  file_url={msg.file_url}
-                  time={msg.created_at}
-                  read_status={msg.read_status}
-                  sender_id={msg.sender_id}
-                  userId={userId}
-                  msgPlacement={msgPlacement}
-               />
-            </div>;
-         })}
+               </div>
+            )
+         }
       </main>
 
       {/* Textinput, send and attachment  */}
@@ -214,7 +241,7 @@ export default function Conversation() {
             </div>
             <input
                type="text"
-               className="w-[100%] bg-bg-color p-1 border-[1px] border-text-color rounded-md outline-none hover:border-convo-header-text-color focus:border-convo-header-text-color focus:border-2"
+               className="w-[100%] bg-bg-color py-1 px-2 border-[1px] border-text-color rounded-md outline-none hover:border-convo-header-text-color focus:border-convo-header-text-color focus:border-2"
                ref={inputRef}
             />
          </div>
