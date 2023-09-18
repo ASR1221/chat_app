@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, SetStateAction, Dispatch } from "react";
 
 import type { Message, ConversationUser, User, Conversation } from "@/types/supabaseTables";
 import { clientSupabase } from "@/utils/clientSupabase";
@@ -20,13 +20,20 @@ type Contact = {
    users: Omit<User, "created_at">[]
 };
 
+type MsgPlaceHolder = {
+   body: string;
+   file_url: string;
+}
+
 export const realtimeContext = createContext<{
    userId: string,
    user: OUser,
    convos: Convo[],
    conts: Contact[],
-   setConts: (conts: Contact[]) => void,
-   setConvos: (convos: Convo[]) => void,
+   setConts: Dispatch<SetStateAction<Contact[]>>,
+   setConvos: Dispatch<SetStateAction<Convo[]>>,
+   msgPlaceHolder: { body: string, file_url: string }[],
+   setMsgPlaceHolder: Dispatch<SetStateAction<MsgPlaceHolder[]>>,
 }>({
    userId: "",
    user: {
@@ -39,6 +46,8 @@ export const realtimeContext = createContext<{
    conts: [],
    setConts: () => {},
    setConvos: () => {},
+   msgPlaceHolder: [],
+   setMsgPlaceHolder: () => {},
 });
 
 export default function RealtimeProvider(props: any) {
@@ -52,6 +61,8 @@ export default function RealtimeProvider(props: any) {
       profile_img_url: null,
    });
    const [convos, setConvos] = useState<Convo[]>([]);
+
+   const [msgPlaceHolder, setMsgPlaceHolder] = useState<MsgPlaceHolder[]>([]);
    
    async function fetchAll() {
 
@@ -76,16 +87,36 @@ export default function RealtimeProvider(props: any) {
                      bio,
                      profile_img_url,
                      is_owner:conversation_user(is_owner)
-                  ),
-                  messages(*)
+                  )
                )
             `)
-            .eq("id", userId)
-            .limit(10, { foreignTable: 'conversations.messages' });
+            .eq("id", userId);
 
-         if (response.error || (response.data && response.data.length < 1)) throw new Error("Some thing went wrong. Please refresh the page.");
+         if (response.error || (response.data && response.data.length < 1)) throw new Error(response.error?.message);
 
-         const response2 = await clientSupabase.from("user_contact").select(`
+         // get the last 10 message of every convo
+         const promises = response.data[0].conversations.map((conv) =>
+            clientSupabase
+               .from("messages")
+               .select()
+               .eq("conversation_id", conv.id)
+               .order("created_at", { ascending: false })
+               .limit(10)
+         );
+
+         const response2 = await Promise.all(promises); // this should through an error if one does
+
+         const final = response.data[0].conversations.map(
+            (conv, i) => ({
+               ...conv,
+               messages: response2[i].data?.reverse().flatMap(d => {
+                  if (d.conversation_id === conv.id) return d
+                  return [];
+               }) ?? null
+            })
+         );
+
+         const response3 = await clientSupabase.from("user_contact").select(`
             users!contact_id (
                id,
                user_name,
@@ -96,7 +127,7 @@ export default function RealtimeProvider(props: any) {
             )
          `).eq("user_id", userId);
 
-         if (response2.error) throw new Error("Some thing went wrong. Please refresh the page.");
+         if (response3.error) throw new Error("Some thing went wrong. Please refresh the page.");
 
          setUser({
             user_name: response.data[0].user_name,
@@ -105,9 +136,9 @@ export default function RealtimeProvider(props: any) {
             profile_img_url: response.data[0].profile_img_url,
          });
 
-         setConvos(response.data[0].conversations);
+         setConvos(final);
 
-         setConts(response2.data)
+         setConts(response3.data)
 
       } catch (e: any) {
          throw new Error(e.message);
@@ -162,6 +193,8 @@ export default function RealtimeProvider(props: any) {
       }
 
       if (payload.eventType === "INSERT") {
+         
+         setMsgPlaceHolder(msgPlaceHolder.filter(f => f.body !== newMessage.body || f.file_url !== newMessage.file_url));
          
          setConvos(prev => {
             const updated = prev.map(c => {
@@ -260,6 +293,8 @@ export default function RealtimeProvider(props: any) {
       conts,
       setConts,
       setConvos,
+      msgPlaceHolder,
+      setMsgPlaceHolder,
    };
 
    return <realtimeContext.Provider value={value} {...props} />;
