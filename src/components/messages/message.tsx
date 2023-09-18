@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 export default function Message({
-   id, body, file_url, time, read_status, sender_id, userId, msgPlacement
+   id, body, file_url, time, read_status, sender_id, userId, isEnd
 }: {
    id: string,
    body: string | null,
@@ -10,16 +10,12 @@ export default function Message({
    read_status: boolean,
    sender_id: string,
    userId: string,
-   msgPlacement: "start" | "end" 
+   isEnd: boolean
 }) {
-   
 
-
-   return <div key={id} className={`${sender_id === userId ? "float-right bg-msg-own-bg-color" : "float-left bg-msg-other-bg-color"} 
+   return <div className={`${sender_id === userId ? "float-right bg-msg-own-bg-color" : "float-left bg-msg-other-bg-color"} 
       min-w-[15%] max-w-[70%] border-[1px] border-black rounded-lg overflow-hidden
-      ${sender_id === userId && msgPlacement === "end" ? "rounded-se-none rounded-ee-none" :
-         sender_id === userId && msgPlacement === "start" ? "rounded-ee-none mb-3" :
-         msgPlacement === "end" ? "rounded-ss-none rounded-es-none" : "rounded-es-none mb-3"}`}
+      ${isEnd ? "mb-[12px]" : "mb-[1px]"} ${isEnd && sender_id === userId ? "rounded-ee-none" : isEnd && sender_id !== userId ? "rounded-se-none" : null}`}
    >
       {
          !file_url ? null : <div>
@@ -34,9 +30,9 @@ export default function Message({
          </div>
       }
       {
-         !body ? null : <p className="p-1 text-sm">{ body }</p>
+         !body ? null : <p className="p-2 text-sm">{ body }</p>
       }
-      <div className={`${sender_id === userId && "grid grid-cols-[2fr_1fr]"} text-devider-line-color px-1 pb-[2px] text-xs`}>
+      <div className={`${sender_id === userId && "grid grid-cols-[2fr_1fr]"} text-devider-line-color px-2 pb-[2px] text-xs`}>
          <p className="font-sans">
             {new Date(time).toLocaleTimeString(undefined, {
                hour: 'numeric',
