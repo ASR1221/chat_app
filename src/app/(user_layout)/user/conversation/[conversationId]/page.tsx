@@ -8,6 +8,7 @@ import {
    useRef,
    useState,
    type BaseSyntheticEvent,
+   useLayoutEffect,
 } from "react";
 
 import { useRealtime } from "@/providers/realtimeProvider";
@@ -19,6 +20,7 @@ import OptionsIcon from "@/components/optionsIcon/optionsIcon";
 import ArrowIcon from "@/svgs/arrowIcon";
 import SendIcon from "@/svgs/sendIcon";
 import AttachmentIcon from "@/svgs/attachmentIcon";
+import useIsIntersecting from "@/hooks/useIsIntersecting";
 
 export default function Conversation() {
    const { push } = useRouter();
@@ -31,7 +33,13 @@ export default function Conversation() {
    const [file, setFile] = useState<File | null>(null);
    const [isError, setIsError] = useState(false);
 
+   const infiniteScrollRef = useRef<HTMLDivElement | null>(null);
+   const msgScrollRef = useRef<HTMLDivElement | null>(null);
    const containerRef = useRef<HTMLDivElement | null>(null);
+   const prevHeightRef = useRef(0);
+   const isGetMessages = useRef(false);
+   const isMsgRefVisible = useIsIntersecting(msgScrollRef, "20px");
+   const isInfiniteRefVisible = useIsIntersecting(infiniteScrollRef, "20px");
 
    const { convos, setConvos, userId, msgPlaceHolder, setMsgPlaceHolder } = useRealtime();
 
@@ -44,7 +52,9 @@ export default function Conversation() {
 
       let path: null | string = null;
 
-      setMsgPlaceHolder(p => [...p, {body: inputRef.current?.value.trim() ?? "", file_url: file ? URL.createObjectURL(file) : ""}])
+      setMsgPlaceHolder(p => [...p, { body: inputRef.current?.value.trim() ?? "", file_url: file ? URL.createObjectURL(file) : "" }]);
+
+      document.documentElement.scrollTo(0, document.documentElement.offsetHeight + 1000);
       
       if (file) {
          const response = await clientSupabase.storage.from("chat")
@@ -84,52 +94,69 @@ export default function Conversation() {
       }
    }
 
+   function getMoreMessages() {
+
+      if (!conversation?.messages && !conversation?.messages?.length) return;
+      if (conversation.messages.length === 15) {}
+      else if (conversation.messages.length % 50 !== 0) return;
+
+      isGetMessages.current = true;
+      
+      const from = conversation?.messages?.length === 15 ? 16 : (conversation?.messages?.length / 50) + 1;
+      const to = conversation?.messages?.length === 15 ? 50 : (from + 49);
+
+      clientSupabase.from("messages").select()
+         .eq("conversation_id", conversationId)
+         .order("created_at", { ascending: false })
+         .range(from, to)
+         .then(response => {
+            if (response.error) return;
+
+            if (response.data.length < 1) return;
+
+            const updated = conversation?.messages;
+            response.data.map(d => updated?.push(d));
+
+            if (updated && updated.length > 0) {
+               setConvos(convos.map(conv => {
+                  if (conv.id === conversationId)
+                     return { ...conv, messages: updated };
+                  return conv;
+               }));
+            }
+         });
+   }
+
    useEffect(() => {
-      // check if there are 10 messages, then fetch more
-      async function getMoreMessages() {
 
-         if (!conversation?.messages && !conversation?.messages?.length) return;
-         if (conversation.messages.length === 10) {}
-         else if (conversation.messages.length % 50 !== 0) return;
+      if (!isInfiniteRefVisible) return;
 
+      if (!containerRef.current) return;
+      prevHeightRef.current = containerRef.current.offsetHeight;
 
-         const from = conversation?.messages?.length === 10 ? 11 : (conversation?.messages?.length / 50) + 1;
-         const to = conversation?.messages?.length === 10 ? 50 : (from + 49);
+      getMoreMessages();
 
-         clientSupabase.from("messages").select()
-            .eq("conversation_id", conversationId)
-            .order("created_at", { ascending: false })
-            .range(from, to)
-            .then(response => {
-               if (response.error) return;
+   }, [conversationId, isInfiniteRefVisible])
 
-               if (response.data.length < 1) return;
-
-               const updated = conversation?.messages;
-               response.data.map(d => updated?.unshift(d));
-
-               if (updated && updated.length > 0)
-                  setConvos(convos.map(conv => {
-                        if (conv.id === conversationId)
-                           return { ...conv, messages: updated };
-                        return conv;
-                     }));
-            });
+   // scroll to bottom on entering a convo
+   const firstScroll = useRef(true);
+   useLayoutEffect(() => {
+      if (firstScroll.current && conversation?.messages) {
+         window.scrollTo(0, document.documentElement.scrollHeight);
+         firstScroll.current = false;
+         return;
       }
 
-      const observer = new IntersectionObserver(([entry]) => {
-         if (entry.isIntersecting) {
-            getMoreMessages();
-         }
-      });
+      if (msgScrollRef.current && isMsgRefVisible) {
+         document.documentElement.scrollTo(0, document.documentElement.offsetHeight + 1000);
+         return;
+      }
 
-      if (containerRef.current) observer.observe(containerRef.current);
+      if (!containerRef.current) return;
+      if (isGetMessages.current) window.scrollTo(0, containerRef.current.offsetHeight - prevHeightRef.current + 60);
 
-      return () => {
-         if (containerRef.current) observer.unobserve(containerRef.current);
-      };
+   }, [convos]);
 
-   }, [conversationId, conversation]);
 
    return <div>
       {/* nav section */}
@@ -162,13 +189,13 @@ export default function Conversation() {
       </nav>
 
       {/* Main messages section */}
-      <main className="py-20 px-3 grid grid-cols-1">
-         <div ref={containerRef}></div>
+      <main className="py-20 px-3 grid grid-cols-1" ref={containerRef}>
+         <div ref={infiniteScrollRef} />
          {conversation?.messages?.map((msg, i) => {
-            const isEnd = conversation.messages && conversation.messages[i + 1] ? !(msg.sender_id === conversation.messages[i + 1].sender_id &&
-               Date.parse(conversation.messages[i + 1].created_at) - Date.parse(msg.created_at) < 120 * 1000) : true;
+            const isEnd = conversation.messages && conversation.messages[i - 1] ? !(msg.sender_id === conversation.messages[i - 1].sender_id &&
+               Date.parse(conversation.messages[i - 1].created_at) - Date.parse(msg.created_at) < 120 * 1000) : true;
                         
-            return !(msg.body || msg.file_url) ? null : <div key={i} className={`w-[100%] ${msg.sender_id !== userId && "grid grid-cols-[15%_83%] gap-2"}`}>
+            return !(msg.body || msg.file_url) ? null : <div key={i} style={{order: conversation.messages?.length && conversation.messages?.length - i}} className={`w-[100%] ${msg.sender_id !== userId && "grid grid-cols-[15%_83%] gap-2"}`}>
                   {
                      msg.sender_id !== userId && <div className="rounded-sm overflow-hidden w-[100%] aspect-square">
                         {
@@ -189,7 +216,7 @@ export default function Conversation() {
                </div>;
          })}
          {
-            msgPlaceHolder && msgPlaceHolder.length > 0 && msgPlaceHolder.map((msg, i) => <div key={i} className="w-[100%]">
+            msgPlaceHolder && msgPlaceHolder.length > 0 && msgPlaceHolder.map((msg, i) => <div key={i} className="w-[100%]" style={{order: 9999900 + i}}>
                   <div className={`opacity-50 float-right bg-msg-own-bg-color min-w-[15%] max-w-[70%] border-[1px] ${isError ? "border-red-color" : "border-black"} rounded-lg overflow-hidden mb-3`}>
                      {
                         !msg.file_url ? null : <div>
@@ -210,6 +237,7 @@ export default function Conversation() {
                </div>
             )
          }
+         <div ref={msgScrollRef} style={{order: 100000000}} className="mb-4" />
       </main>
 
       {/* Textinput, send and attachment  */}
