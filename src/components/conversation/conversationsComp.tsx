@@ -44,7 +44,7 @@ export default function ConversationsComp({ conversations, userId }: { conversat
                <div className="grid grid-cols-1 items-center">
                   <div>
                      <h3 className="text-lg">{ convo.name }</h3>
-                     <p className="text-text-color">{ convo.messages?.length ? deiplayShortMessage(convo.messages.at(-1)?.body) : "No messages" }</p>
+                     <p className="text-text-color">{ convo.messages?.length ? deiplayShortMessage(convo.messages.at(0)?.body) : "No messages" }</p>
                   </div>
                </div>
                <div className="grid grid-cols-1 items-center">
