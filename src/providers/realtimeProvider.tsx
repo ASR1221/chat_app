@@ -101,7 +101,7 @@ export default function RealtimeProvider(props: any) {
                .select()
                .eq("conversation_id", conv.id)
                .order("created_at", { ascending: false })
-               .limit(10)
+               .limit(15)
          );
 
          const response2 = await Promise.all(promises); // this should through an error if one does
@@ -109,7 +109,7 @@ export default function RealtimeProvider(props: any) {
          const final = response.data[0].conversations.map(
             (conv, i) => ({
                ...conv,
-               messages: response2[i].data?.reverse().flatMap(d => {
+               messages: response2[i].data?.flatMap(d => {
                   if (d.conversation_id === conv.id) return d
                   return [];
                }) ?? null
@@ -201,7 +201,7 @@ export default function RealtimeProvider(props: any) {
 
                if (c.id === newMessage.conversation_id) {
                   const m = c.messages ?? [];
-                  m.push(newMessage);
+                  m.unshift(newMessage);
                   return { ...c, messages: m };
                };
    
