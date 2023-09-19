@@ -36,7 +36,7 @@ export default function Landing() {
 
    }, []);
 
-   return <div>
+   return <div className="smooth-scroll">
       <nav className="flex justify-between items-center py-3 px-4 border-b-[1px] border-text-color sm:px-[15%]">
          <div className="flex justify-evenly">
             <div>
