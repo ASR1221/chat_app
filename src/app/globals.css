@@ -31,7 +31,6 @@
 }
 
 html {
-	scroll-behavior: smooth;
 	background: var(--bg-color);
 }
 
@@ -60,4 +59,8 @@ h3, h4, h5, h6, p, span, div, input, a, button {
 .no-scrollbar {
 	-ms-overflow-style: none !important;  /* IE and Edge */
 	scrollbar-width: none !important;  /* Firefox */
+}
+
+.smooth-scroll {
+	scroll-behavior: smooth;
 }
