@@ -194,7 +194,8 @@ export default function RealtimeProvider(props: any) {
 
       if (payload.eventType === "INSERT") {
          
-         setMsgPlaceHolder(msgPlaceHolder.filter(f => f.body !== newMessage.body || f.file_url !== newMessage.file_url));
+         if (newMessage.sender_id === userId)
+            setMsgPlaceHolder(msgPlaceHolder.filter(f => f.body !== newMessage.body || f.file_url !== newMessage.file_url));
          
          setConvos(prev => {
             const updated = prev.map(c => {
