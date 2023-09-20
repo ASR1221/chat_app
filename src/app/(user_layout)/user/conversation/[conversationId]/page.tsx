@@ -153,7 +153,10 @@ export default function Conversation() {
       }
 
       if (!containerRef.current) return;
-      if (isGetMessages.current) window.scrollTo(0, containerRef.current.offsetHeight - prevHeightRef.current + 60);
+      if (isGetMessages.current) {
+         window.scrollTo(0, containerRef.current.offsetHeight - prevHeightRef.current + 60);
+         isGetMessages.current = false;
+      }
 
    }, [convos]);
 
