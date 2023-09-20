@@ -21,6 +21,7 @@ import ArrowIcon from "@/svgs/arrowIcon";
 import SendIcon from "@/svgs/sendIcon";
 import AttachmentIcon from "@/svgs/attachmentIcon";
 import useIsIntersecting from "@/hooks/useIsIntersecting";
+import ConfirmationModal from "@/components/confirmationModal/confirmationModal";
 
 export default function Conversation() {
    const { push } = useRouter();
@@ -32,6 +33,12 @@ export default function Conversation() {
    const inputRef = useRef<HTMLInputElement>(null);
    const [file, setFile] = useState<File | null>(null);
    const [isError, setIsError] = useState(false);
+
+   const [isModalOpen, setIsModalOpen] = useState(false);
+   const [modalType, setModalType] = useState<"sending" | "resend" | "deleting" | "delete" | "delete error" >("delete");
+   const deleteMsgIdRef = useRef("");
+   const resendMsgDataRef = useRef<{ body: string, file_url: string } | null>(null);
+   const [isDeleteVisibleId, setIsDeleteVisibleId] = useState<number | null>(null);
 
    const infiniteScrollRef = useRef<HTMLDivElement | null>(null);
    const msgScrollRef = useRef<HTMLDivElement | null>(null);
@@ -46,6 +53,76 @@ export default function Conversation() {
    const conversation = useMemo(() => {
       return convos.find(conv => conv.id === conversationId);
    }, [convos, conversationId]);
+
+   async function modalConfirmFunc() {
+      if ((modalType === "delete" || modalType === "delete error") && deleteMsgIdRef.current) {
+         setModalType("deleting");
+         const message = conversation?.messages?.find(m => m.id === deleteMsgIdRef.current);
+         if (message?.body) {
+            const response = await clientSupabase.from("messages").delete().eq("id", deleteMsgIdRef.current);
+            if (response.error) {
+               setModalType("delete error");
+               return;
+            }
+         }
+         if (message?.file_url) {
+            await clientSupabase.storage.from("chat").remove([message.file_url]);
+         }
+         
+         deleteMsgIdRef.current = "";
+
+      } else if (modalType === "resend" && resendMsgDataRef.current) {
+
+         let path: null | string = null;
+         const { body, file_url } = resendMsgDataRef.current;
+         const file = URL.revokeObjectURL(file_url) as unknown as File;
+
+         if (file && body) {
+            setModalType("sending");
+            const response = await clientSupabase.storage.from("chat")
+               .upload(`message_files/${Date.now()}-${file.name}`, file);
+
+            if (response.error) {
+               setModalType("resend");
+               return;
+            }
+            path = `https://mhlqhssqzsezzhgonlxp.supabase.co/storage/v1/object/public/chat/${response.data.path}`;
+         }
+
+         if (body) {
+            const message: {
+               body: string,
+               sender_id: string,
+               conversation_id: string,
+               file_url?: string,
+            } = {
+               body: body,
+               sender_id: userId,
+               conversation_id: conversationId,
+            }
+
+            if (path) message.file_url = path;
+
+            setModalType("sending");
+
+            const response = await clientSupabase.from("messages").insert([message]);
+
+            if (response.error) {
+               setModalType("resend");
+               return;
+            }
+            resendMsgDataRef.current = null;
+         }
+      }
+      setIsModalOpen(false);
+   }
+
+   function modalCancelFunc() {
+      setIsModalOpen(false);
+      deleteMsgIdRef.current = "";
+      setMsgPlaceHolder(msgPlaceHolder.filter(f => f.body !== resendMsgDataRef.current?.body || f.file_url !== resendMsgDataRef.current.file_url));
+      resendMsgDataRef.current = null;
+   }
 
    async function handleSendMessage(e: BaseSyntheticEvent) {
       e.preventDefault();
@@ -84,7 +161,8 @@ export default function Conversation() {
          const response = await clientSupabase.from("messages").insert([message]);
 
          if (response.error) setIsError(true);
-         else inputRef.current.value = "";
+         
+         inputRef.current.value = "";
       }
    }
 
@@ -198,13 +276,31 @@ export default function Conversation() {
             const isEnd = conversation.messages && conversation.messages[i - 1] ? !(msg.sender_id === conversation.messages[i - 1].sender_id &&
                Date.parse(conversation.messages[i - 1].created_at) - Date.parse(msg.created_at) < 120 * 1000) : true;
                         
-            return !(msg.body || msg.file_url) ? null : <div key={i} style={{order: conversation.messages?.length && conversation.messages?.length - i}} className={`w-[100%] ${msg.sender_id !== userId && "grid grid-cols-[15%_83%] gap-2"}`}>
+            return !(msg.body || msg.file_url) ? null :
+               <div
+                  key={i}
+                  onClick={() => setIsDeleteVisibleId(p => p === i ? null : i)}
+                  style={{ order: conversation.messages?.length && conversation.messages?.length - i }}
+                  className={`w-[100%] cursor-pointer ${isEnd ? "mb-[12px]" : "mb-[1px]"} ${(msg.sender_id !== userId || isDeleteVisibleId === i) ? "flex gap-4" : ""} ${isDeleteVisibleId === i && msg.sender_id === userId ? "justify-end" : ""}`}
+               >
                   {
-                     msg.sender_id !== userId && <div className="rounded-sm overflow-hidden w-[100%] aspect-square">
+                     msg.sender_id !== userId && <div className="rounded-sm overflow-hidden w-14 aspect-square">
                         {
                            isEnd && <img src={conversation.users.find(u => u.id === msg.sender_id)?.profile_img_url ?? ""} className="object-cover" />
                         }
                      </div>
+                  }
+                  {
+                     msg.sender_id === userId && isDeleteVisibleId === i && <button
+                        type="button"
+                        onClick={() => {
+                           setModalType("delete");
+                           deleteMsgIdRef.current = msg.id;
+                           setIsModalOpen(true);
+                        }}
+                     >
+                        <img src="/images/icons/icons8-delete.svg" alt="delete icon" />
+                     </button>
                   }
                   <Message
                      id={msg.id}
@@ -220,7 +316,16 @@ export default function Conversation() {
          })}
          {
             msgPlaceHolder && msgPlaceHolder.length > 0 && msgPlaceHolder.map((msg, i) => <div key={i} className="w-[100%]" style={{order: 9999900 + i}}>
-                  <div className={`opacity-50 float-right bg-msg-own-bg-color min-w-[15%] max-w-[70%] border-[1px] ${isError ? "border-red-color" : "border-black"} rounded-lg overflow-hidden mb-3`}>
+               <div
+                  onClick={() => {
+                     if (isError) {
+                        setModalType("resend");
+                        resendMsgDataRef.current = msg;
+                        setIsModalOpen(true);
+                     }
+                  }}
+                  className={`opacity-50 float-right bg-msg-own-bg-color min-w-[15%] max-w-[70%] border-[1px] ${isError ? "border-red-color" : "border-black"} rounded-lg overflow-hidden mb-3`}
+               >
                      {
                         !msg.file_url ? null : <div>
                            <Image
@@ -290,6 +395,13 @@ export default function Conversation() {
             <SendIcon isDark={isDark} width={35} />
          </button>
       </section>
-
+      <ConfirmationModal
+         isOpen={isModalOpen}
+         mainText={modalType === "deleting" ? "Deleting..." : modalType === "sending" ? "Sending..." : modalType === "delete" ? "Do you want to delete this message?" : modalType === "delete error" ? "Error deleting message. Try deleting it again?" : "Message send failed. Try sending it again?"}
+         confirmBtnText={modalType.includes("delet") ? "Delete" : "Send"}
+         areBtnsDisabled={modalType.includes("ing")}
+         confirmFunc={modalConfirmFunc}
+         cancelFunc={modalCancelFunc}
+      />
    </div>
 }

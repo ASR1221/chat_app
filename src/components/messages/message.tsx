@@ -15,7 +15,7 @@ export default function Message({
 
    return <div className={`${sender_id === userId ? "float-right bg-msg-own-bg-color" : "float-left bg-msg-other-bg-color"} 
       min-w-[15%] max-w-[70%] border-[1px] border-black rounded-lg overflow-hidden
-      ${isEnd ? "mb-[12px]" : "mb-[1px]"} ${isEnd && sender_id === userId ? "rounded-ee-none" : isEnd && sender_id !== userId ? "rounded-se-none" : null}`}
+      ${isEnd && sender_id === userId ? "rounded-ee-none" : isEnd && sender_id !== userId ? "rounded-se-none" : null}`}
    >
       {
          !file_url ? null : <div>
