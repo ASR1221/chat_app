@@ -48,7 +48,7 @@ export default function Conversation() {
    }, [convos, conversationId]);
 
    async function handleSendMessage(e: BaseSyntheticEvent) {
-      e.preventDefault()
+      e.preventDefault();
 
       let path: null | string = null;
 
@@ -136,7 +136,7 @@ export default function Conversation() {
 
       getMoreMessages();
 
-   }, [conversationId, isInfiniteRefVisible])
+   }, [conversationId, isInfiniteRefVisible]);
 
    // scroll to bottom on entering a convo
    const firstScroll = useRef(true);
