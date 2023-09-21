@@ -276,7 +276,12 @@ export default function Conversation() {
       {/* Main messages section */}
       <main className="py-20 px-3 grid grid-cols-1 bg-bg-color" ref={containerRef}>
          <div ref={infiniteScrollRef} />
-         {conversation?.messages?.map((msg, i) => {
+         {conversation?.messages && conversation?.messages.length < 1 ? <div className="w-fit mx-auto mt-32">
+            <div className="w-[300px] mx-auto">
+               <img src="/images/illustrations/No data-pana.svg" alt="Empty chat illustration" />
+            </div>
+            <p>No messages yet. Write a message an it will be seen here.</p>
+         </div> : conversation?.messages?.map((msg, i) => {
             const isEnd = conversation.messages && conversation.messages[i - 1] ? !(msg.sender_id === conversation.messages[i - 1].sender_id &&
                Date.parse(conversation.messages[i - 1].created_at) - Date.parse(msg.created_at) < 120 * 1000) : true;
                         
