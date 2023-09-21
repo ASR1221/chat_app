@@ -32,6 +32,7 @@ export default function Conversation() {
 
    const inputRef = useRef<HTMLTextAreaElement | null>(null);
    const [file, setFile] = useState<File | null>(null);
+   const uploadFileRef = useRef<HTMLInputElement | null>(null);
    const [isError, setIsError] = useState(false);
 
    const [isModalOpen, setIsModalOpen] = useState(false);
@@ -368,7 +369,7 @@ export default function Conversation() {
                </div>
             </button>
             
-            <div className={`w-[100%] absolute ${file && file ? "bottom-10 opacity-1" : "bottom-4 opacity-0 pointer-events-none"} p-1 border-[1px] border-text-color rounded-md outline-none transition-all duration-300`}>
+            <div className={`w-[100%] bg-bg-color absolute ${file && file ? "bottom-11 opacity-1" : "bottom-4 opacity-0 pointer-events-none"} p-1 border-[1px] border-text-color rounded-md outline-none transition-all duration-300`}>
                {
                   file && <div className={`grid ${
                      file.type === "image/jpg" ||
@@ -381,9 +382,13 @@ export default function Conversation() {
                         file.type === "image/png" && <img src={URL.createObjectURL(file)} alt="Your image" className="max-h-10 object-cover rounded-md border-[1px] border-devider-line-color"/>
                      }
                      <p>{file.name}</p>
-                     <button type="button" className="relative ml-auto mr-2" onClick={() => setFile(null)}>
-                        <div className="h-[2px] bg-text-color w-7 rotate-45 rounded-lg absolute"></div>
-                        <div className="h-[2px] bg-text-color w-7 -rotate-45 rounded-lg"></div>
+                     <button type="button" className="relative ml-auto mr-1 p-2" onClick={() => {
+                           setFile(null);
+                           if (uploadFileRef.current) uploadFileRef.current.value = "";
+                        }}
+                     >
+                        <div className="h-[1.5px] bg-text-color w-7 rotate-45 rounded-lg absolute"></div>
+                        <div className="h-[1.5px] bg-text-color w-7 -rotate-45 rounded-lg"></div>
                      </button>
                   </div>
                }
@@ -404,6 +409,7 @@ export default function Conversation() {
                name="file"
                accept="image/jpg, image/jpeg, image/png"
                className="hidden"
+               ref={uploadFileRef}
                onChange={handleFileChange}
             />
          </label>
