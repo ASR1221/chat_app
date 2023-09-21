@@ -276,7 +276,7 @@ export default function Conversation() {
       {/* Main messages section */}
       <main className="py-20 px-3 grid grid-cols-1 bg-bg-color" ref={containerRef}>
          <div ref={infiniteScrollRef} />
-         {conversation?.messages && conversation?.messages.length ? <div className="w-fit mx-auto mt-32">
+         {conversation?.messages && !conversation?.messages.length ? <div className="w-fit mx-auto mt-32">
             <div className="w-[300px] mx-auto">
                <img src="/images/illustrations/No data-pana.svg" alt="Empty chat illustration" />
             </div>
