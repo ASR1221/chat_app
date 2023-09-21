@@ -24,7 +24,12 @@ export default function ConversationsComp({ conversations, userId }: { conversat
 
    return <section className="[&>*:not(:last-child)]:border-b-[1px] [&>*]:border-devider-line-color">
       {
-         !conversations.length ? "No Conversations" : conversations.map(convo =>
+         !conversations.length ? <div className="w-fit mx-auto mt-32">
+            <div className="w-[300px] mx-auto">
+               <img src="/images/illustrations/No data-pana.svg" alt="Empty chat illustration" />
+            </div>
+            <p>No Conversation yet. Create a conversation and it will be seen here.</p>
+         </div> : conversations.map(convo =>
             <Link
                href={`/user/conversation/${convo.id}`}
                key={convo.id}
