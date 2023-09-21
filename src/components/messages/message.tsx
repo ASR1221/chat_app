@@ -30,7 +30,7 @@ export default function Message({
          </div>
       }
       {
-         !body ? null : <p className="p-2 text-sm">{ body }</p>
+         !body ? null : <p className="p-2 text-sm whitespace-pre-line">{ body }</p>
       }
       <div className={`${sender_id === userId && "grid grid-cols-[2fr_1fr]"} text-devider-line-color px-2 pb-[2px] text-xs`}>
          <p className="font-sans">

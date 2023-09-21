@@ -30,7 +30,7 @@ export default function Conversation() {
 
    const { isDark } = useTheme();
 
-   const inputRef = useRef<HTMLInputElement>(null);
+   const inputRef = useRef<HTMLTextAreaElement | null>(null);
    const [file, setFile] = useState<File | null>(null);
    const [isError, setIsError] = useState(false);
 
@@ -368,7 +368,7 @@ export default function Conversation() {
                </div>
             </button>
             
-            <div className={`w-[100%] absolute ${file && file ? "bottom-10 opacity-1" : "bottom-4 opacity-0"} p-1 border-[1px] border-text-color rounded-md outline-none transition-all duration-300`}>
+            <div className={`w-[100%] absolute ${file && file ? "bottom-10 opacity-1" : "bottom-4 opacity-0 pointer-events-none"} p-1 border-[1px] border-text-color rounded-md outline-none transition-all duration-300`}>
                {
                   file && <div className={`grid ${
                      file.type === "image/jpg" ||
@@ -388,10 +388,12 @@ export default function Conversation() {
                   </div>
                }
             </div>
-            <input
-               type="text"
-               className="w-[100%] bg-bg-color py-1 px-2 border-[1px] border-text-color rounded-md outline-none hover:border-convo-header-text-color focus:border-convo-header-text-color focus:border-2"
+            <textarea
+               name="text"
+               id="text"
+               rows={1}
                ref={inputRef}
+               className="w-[100%] bg-bg-color py-1 px-2 border-[1px] border-text-color rounded-md outline-none hover:border-convo-header-text-color focus:border-convo-header-text-color focus:border-2 resize-none no-scrollbar"
             />
          </div>
          <label htmlFor="file" className="mx-auto cursor-pointer">
