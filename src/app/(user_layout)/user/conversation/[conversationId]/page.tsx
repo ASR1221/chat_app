@@ -390,6 +390,7 @@ export default function Conversation() {
                type="file"
                id="file"
                name="file"
+               accept="image/jpg, image/jpeg, image/png"
                className="hidden"
                onChange={handleFileChange}
             />
