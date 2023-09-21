@@ -34,23 +34,24 @@ export default function UserLayout({ children }: { children: ReactNode }) {
 
    return <>
       
-      <nav className="grid grid-cols-[1fr_8fr_1fr] gap-5 items-center justify-between p-4 bg-convo-header-bg-color text-convo-header-text-color md:w-[370px]">
+      <nav className="fixed grid grid-cols-[1fr_8fr_1fr] gap-5 items-center justify-between p-4 bg-convo-header-bg-color text-convo-header-text-color md:w-[370px]">
          <OptionsIcon clickFunc={() => router.push("/user?options=true")}/>
          <h2 className="text-4xl text-convo-header-text-color">Chatty</h2>
          <Link href="/user/search"><SearchIcon isDark={isDark} width={25} /></Link>
       </nav>
       <OptionsModal />
       
-      <div className="px-4 md:w-[370px]">
+      <div className="px-4 md:w-[370px] fixed mt-20">
          <ConversationsComp conversations={convos} userId={userId} />
       </div>
       <Link
          href="/user/conversation/add"
-         className="w-12 pt-1 grid justify-center items-center aspect-square rounded-sm absolute bottom-4 right-4 md:right-[calc(100vw-370px+1rem)] bg-convo-header-bg-color text-convo-header-text-color text-2xl font-bold shadow-basic hover:bg-btn-color transition-all duration-300"
+         className="w-12 pt-1 grid justify-center items-center aspect-square rounded-sm fixed bottom-4 right-4 md:right-[calc(100vw-370px+1rem)] bg-convo-header-bg-color text-convo-header-text-color text-2xl font-bold shadow-basic hover:bg-btn-color transition-all duration-300"
       >+</Link>
 
+      <div className="w-[1px] bg-devider-line-color left-[370px] top-0 bottom-0 z-[100] md:fixed" />
       <div
-         className={`w-[100vw] z-10 bg-bg-color absolute top-0 bottom-0 ${pathname === "/user" ? "left-[100vw]" : "left-[0]"} transition-all md:w-[calc(100vw-370px)] md:left-[370px] md:border-l-[1px] md:border-devider-line-color`}
+         className={`w-[100vw] z-10 absolute top-0 bottom-0 ${pathname === "/user" ? "left-[100vw]" : "left-[0]"} transition-all md:w-[calc(100vw-370px)] md:left-[370px]`}
       >{children}</div>
    </>;
 }

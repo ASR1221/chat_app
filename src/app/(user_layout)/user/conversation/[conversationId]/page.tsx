@@ -243,7 +243,7 @@ export default function Conversation() {
    }, [convos]);
 
 
-   return <div>
+   return <>
       {/* nav section */}
       <nav
          className={`grid grid-cols-[1fr_8fr_1fr] gap-5 items-center justify-between px-4 fixed top-0 ${
@@ -274,7 +274,7 @@ export default function Conversation() {
       </nav>
 
       {/* Main messages section */}
-      <main className="py-20 px-3 grid grid-cols-1" ref={containerRef}>
+      <main className="py-20 px-3 grid grid-cols-1 bg-bg-color" ref={containerRef}>
          <div ref={infiniteScrollRef} />
          {conversation?.messages?.map((msg, i) => {
             const isEnd = conversation.messages && conversation.messages[i - 1] ? !(msg.sender_id === conversation.messages[i - 1].sender_id &&
@@ -425,5 +425,5 @@ export default function Conversation() {
          confirmFunc={modalConfirmFunc}
          cancelFunc={modalCancelFunc}
       />
-   </div>
+   </>
 }
