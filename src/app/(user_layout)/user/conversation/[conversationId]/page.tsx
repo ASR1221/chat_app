@@ -127,11 +127,14 @@ export default function Conversation() {
    async function handleSendMessage(e: BaseSyntheticEvent) {
       e.preventDefault();
 
+      if (!inputRef.current?.value.trim()) return;
+      
       let path: null | string = null;
 
       setMsgPlaceHolder(p => [...p, { body: inputRef.current?.value.trim() ?? "", file_url: file ? URL.createObjectURL(file) : "" }]);
 
-      document.documentElement.scrollTo(0, document.documentElement.offsetHeight + 1000);
+      if (containerRef.current)
+         document.documentElement.scrollTo(0, containerRef.current.offsetHeight + 1000);
       
       if (file) {
          const response = await clientSupabase.storage.from("chat")
@@ -162,6 +165,7 @@ export default function Conversation() {
 
          if (response.error) setIsError(true);
          
+         setFile(null);
          inputRef.current.value = "";
       }
    }
@@ -175,13 +179,11 @@ export default function Conversation() {
    function getMoreMessages() {
 
       if (!conversation?.messages && !conversation?.messages?.length) return;
-      if (conversation.messages.length === 15) {}
-      else if (conversation.messages.length % 50 !== 0) return;
 
       isGetMessages.current = true;
       
-      const from = conversation?.messages?.length === 15 ? 16 : (conversation?.messages?.length / 50) + 1;
-      const to = conversation?.messages?.length === 15 ? 50 : (from + 49);
+      const from = conversation?.messages?.length + 1;
+      const to = from + 50;
 
       clientSupabase.from("messages").select()
          .eq("conversation_id", conversationId)
@@ -218,19 +220,20 @@ export default function Conversation() {
 
    // scroll to bottom on entering a convo
    const firstScroll = useRef(true);
-   useLayoutEffect(() => {
+   useEffect(() => {
+      if (!containerRef.current) return;
+
       if (firstScroll.current && conversation?.messages) {
-         window.scrollTo(0, document.documentElement.scrollHeight);
+         window.scrollTo(0, containerRef.current.offsetHeight + 1000);
          firstScroll.current = false;
          return;
       }
 
       if (msgScrollRef.current && isMsgRefVisible) {
-         document.documentElement.scrollTo(0, document.documentElement.offsetHeight + 1000);
+         document.documentElement.scrollTo(0, containerRef.current.offsetHeight + 1000);
          return;
       }
 
-      if (!containerRef.current) return;
       if (isGetMessages.current) {
          window.scrollTo(0, containerRef.current.offsetHeight - prevHeightRef.current + 60);
          isGetMessages.current = false;
