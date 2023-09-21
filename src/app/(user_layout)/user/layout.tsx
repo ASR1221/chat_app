@@ -34,14 +34,14 @@ export default function UserLayout({ children }: { children: ReactNode }) {
 
    return <>
       
-      <nav className="fixed grid grid-cols-[1fr_8fr_1fr] gap-5 items-center justify-between p-4 bg-convo-header-bg-color text-convo-header-text-color md:w-[370px]">
+      <nav className="fixed grid grid-cols-[1fr_8fr_1fr] gap-5 items-center justify-between p-4 bg-convo-header-bg-color text-convo-header-text-color px-4 w-[100%] md:w-[370px]">
          <OptionsIcon clickFunc={() => router.push("/user?options=true")}/>
          <h2 className="text-4xl text-convo-header-text-color">Chatty</h2>
          <Link href="/user/search"><SearchIcon isDark={isDark} width={25} /></Link>
       </nav>
       <OptionsModal />
       
-      <div className="px-4 md:w-[370px] fixed mt-20">
+      <div className="px-4 w-[100%] md:w-[370px] fixed mt-20">
          <ConversationsComp conversations={convos} userId={userId} />
       </div>
       <Link
