@@ -358,6 +358,16 @@ export default function Conversation() {
          } w-[100vw] md:w-[calc(100vw-370px)] md:left-[370px] isolate bg-bg-color`}
       >
          <div className="relative">
+         
+            <button
+               type="button"
+               onClick={() => document.documentElement.scrollTo(0, containerRef.current ? containerRef.current.offsetHeight + 1000 : 0)}
+               className={`${!isMsgRefVisible ? "opacity-100 -top-[200%] pointer-events-auto z-auto" : "opacity-0 -top-[100%] pointer-events-none -z-10"} transition-all p-2 bg-convo-header-text-color rounded-full absolute -top-[200%] -right-[30%]`}>
+               <div className="w-5 h-5 relative">
+                  <div className="w-4 h-4 -pt-6 border-b-2 border-r-2 border-white rotate-45 absolute -top-[2px] left-[1.7px]" />
+               </div>
+            </button>
+            
             <div className={`w-[100%] absolute ${file && file ? "bottom-10 opacity-1" : "bottom-4 opacity-0"} p-1 border-[1px] border-text-color rounded-md outline-none transition-all duration-300`}>
                {
                   file && <div className={`grid ${
