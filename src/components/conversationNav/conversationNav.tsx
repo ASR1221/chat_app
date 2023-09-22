@@ -37,6 +37,6 @@ export default function ConversationNav({ conversation, isDark, pathname }: { co
             </div>
             <h3 className="text-xl">{conversation?.name}</h3>
          </div>
-         <OptionsIcon clickFunc={() => push(`/user/${conversation?.id}/info`)} />
+         <OptionsIcon clickFunc={() => push(`/user/conversation/${conversation?.id}/info`)} />
       </nav>
 }
