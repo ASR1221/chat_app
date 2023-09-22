@@ -51,7 +51,7 @@ export default function ConfirmationModal({ isOpen, mainText, confirmBtnText, co
             type="button"
             disabled={areBtnsDisabled}
             onClick={confirmFunc}
-            className={`${confirmBtnText === "Delete" ? "bg-red-color hover:bg-red-700" : confirmBtnText === "Save" ? "bg-green-color hover:bg-green-700" : "bg-btn-color hover:bg-btn-border-color" } px-2 py-1 rounded-md`}
+            className={`${confirmBtnText === "Delete" || confirmBtnText === "Leave" || confirmBtnText === "Kick" ? "bg-red-color hover:bg-red-700" : confirmBtnText === "Save" ? "bg-green-color hover:bg-green-700" : "bg-btn-color hover:bg-btn-border-color" } px-2 py-1 rounded-md`}
          >{confirmBtnText}</button>
       </div>
    </dialog>
