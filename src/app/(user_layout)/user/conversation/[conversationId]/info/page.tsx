@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, BaseSyntheticEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 import { clientSupabase } from "@/utils/clientSupabase";
@@ -11,6 +11,8 @@ import EditIcon from "@/svgs/editIcon";
 import Link from "next/link";
 import SimpleNav from "@/components/simpleNav/simpleNav";
 import ConfirmationModal from "@/components/confirmationModal/confirmationModal";
+import ImageModal from "@/components/imageModal/imageModal";
+
 
 export default function ConversationInfo() {
 
@@ -38,6 +40,8 @@ export default function ConversationInfo() {
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [modalType, setModalType] = useState<"delete" | "deleting" | "leave" | "leaving" | "kick" | "kicking">("delete");
    const [kickedUser, setKickedUser] = useState<{user_name: string, id: string} | null>();
+   
+   const [isImgModalOpen, setIsImgModalOpen] = useState(false);
 
    useEffect(() => {
       setConvoName(conversation?.name ?? "");
@@ -75,6 +79,15 @@ export default function ConversationInfo() {
 
       setModalType("deleting");
 
+      const imgsResonse = await clientSupabase.from("messages")
+         .select("file_url").eq("conversation_id", conversationId);
+      
+      if (imgsResonse.error) {
+         setIsError(true);
+         setModalType("leave");
+         return;
+      }
+
       const response = await clientSupabase.from("conversations").delete().eq("id", conversationId);
 
       if (response.error) {
@@ -84,7 +97,9 @@ export default function ConversationInfo() {
       }
 
       if (conversation?.group_img_url)
-         clientSupabase.storage.from("chat").remove([conversation?.group_img_url]);
+         clientSupabase.storage.from("chat").remove([conversation?.group_img_url.split("https://mhlqhssqzsezzhgonlxp.supabase.co/storage/v1/object/public/chat/")[1]]);
+
+      clientSupabase.storage.from("chat").remove([...imgsResonse.data.flatMap(m => m.file_url ?? [])]);
 
       setIsModalOpen(false);
       push("/user");
@@ -93,6 +108,15 @@ export default function ConversationInfo() {
    async function handleLeaveConvo() {
       
       setModalType("leaving");
+
+      const imgsResonse = await clientSupabase.from("messages")
+         .select("file_url").eq("conversation_id", conversationId).eq("sender_id", userId);
+
+      if (imgsResonse.error) {
+         setIsError(true);
+         setModalType("leave");
+         return;
+      }
 
       const msgsResponse = await clientSupabase.from("messages")
          .delete().eq("conversation_id", conversationId).eq("sender_id", userId);
@@ -112,6 +136,8 @@ export default function ConversationInfo() {
          return;
       }
 
+      clientSupabase.storage.from("chat").remove([...imgsResonse.data.flatMap(m => m.file_url ?? [])]);
+
       setIsModalOpen(false);
       push("/user");
    }
@@ -122,6 +148,15 @@ export default function ConversationInfo() {
 
       if (!(kickedUser?.id && kickedUser.user_name)) return;
 
+      const imgsResonse = await clientSupabase.from("messages")
+         .select("file_url").eq("conversation_id", conversationId).eq("sender_id", kickedUser.id);
+
+      if (imgsResonse.error) {
+         setIsError(true);
+         setModalType("leave");
+         return;
+      }
+      
       const msgsResponse = await clientSupabase.from("messages")
          .delete().eq("conversation_id", conversationId).eq("sender_id", kickedUser.id);
       
@@ -140,20 +175,49 @@ export default function ConversationInfo() {
          return;
       }
 
+      clientSupabase.storage.from("chat").remove([...imgsResonse.data.flatMap(m => m.file_url ?? [])]);
+
       setIsModalOpen(false);
       setKickedUser(null);
    }
 
-   return <div className="fixed top-0 bottom-0 bg-bg-color w-[100%]">
+   async function uploadImage(e: BaseSyntheticEvent) {
+      if (!conversationId) return;
+      if (!e.target.files[0]) return;
+
+      const uploadResponse = await clientSupabase.storage.from("chat")
+         .upload(`group_images/${Date.now()}-${e.target.files[0].name}`, e.target.files[0]);
+      
+      if (uploadResponse.error) return;
+
+      const imageURL = `https://mhlqhssqzsezzhgonlxp.supabase.co/storage/v1/object/public/chat/${uploadResponse.data.path}`;
+
+      const updateResponse = await clientSupabase.from("conversations")
+         .update({ group_img_url: imageURL }).eq("id", conversationId);
+      
+   }
+
+   return <div className="absolute top-0 bottom-0 bg-bg-color w-[100%]">
       <SimpleNav backPath={`/user/conversation/${conversationId}`} />
       <div className="mt-20 mx-5">
-         <section className="grid grid-cols-[1fr_4fr_1fr] gap-5 items-center px-2 py-4 border-b-[1px] border-devider-line-color">
-            <button
-               type="button"
-               className="rounded-md overflow-hidden aspect-square bg-devider-line-color"
-            >
-               {conversation?.group_img_url && <img src={conversation?.group_img_url} alt={`${conversation.name} image`} className="w-[100%] aspect-square object-cover" />}
-            </button>
+         <section className="grid grid-cols-[15%_65%_15%] gap-5 items-center px-2 py-4 border-b-[1px] border-devider-line-color">
+            {
+               conversation?.group_img_url ? <button
+                  type="button"
+                  className="rounded-md overflow-hidden aspect-square bg-devider-line-color min-w-[50px] max-w-[65px]"
+                  onClick={() => setIsImgModalOpen(true)}
+               >
+                  <img src={conversation?.group_img_url} alt={`${conversation.name} image`} className="w-[100%] aspect-square object-cover" />
+               </button> : <label htmlFor="file" className="rounded-md overflow-hidden aspect-square bg-devider-line-color cursor-pointer">
+                     <input
+                        type="file"
+                        id="file"
+                        accept="image/jpg, image/jpeg, image/png"
+                        hidden
+                        onChange={uploadImage}
+                     />
+               </label>
+            }
 
             <input
                type="text"
@@ -193,9 +257,9 @@ export default function ConversationInfo() {
          <section className="px-2 py-4 border-t-[1px] border-devider-line-color">
             <h3>Members</h3>
             {
-               conversation?.users.map(user => <div key={user.id} className="grid grid-cols-[1fr_5fr_1fr] gap-5 items-center py-3">
+               conversation?.users.map(user => <div key={user.id} className="grid grid-cols-[10%_75%_10%] gap-5 items-center py-3">
 
-                  <div className="rounded-md overflow-hidden aspect-square bg-devider-line-color">
+                  <div className="rounded-md overflow-hidden aspect-square bg-devider-line-color min-w-[40px] max-w-[55px]">
                      {user.profile_img_url && <img src={user.profile_img_url} alt={`${user.user_name} profile image`} className="w-[100%] aspect-square object-cover" />}
                   </div>
 
@@ -213,7 +277,7 @@ export default function ConversationInfo() {
                               setKickedUser({ user_name: user.user_name, id: user.id });
                               setIsModalOpen(true);
                            }}
-                           className="p-2 text-lg text-red-color border-[1px] border-red-color rounded-full"
+                           className=" w-[2rem] h-[2rem] aspect-square text-2xl text-red-color border-[1px] border-red-color rounded-full hover:bg-red-600/60 hover:text-white"
                         >-</button>
                      }
                   </div>
@@ -234,6 +298,12 @@ export default function ConversationInfo() {
          confirmBtnText={modalType === "delete" ? "Delete" : modalType === "leave" ? "Leave" : "Kick"}
          confirmFunc={modalType === "delete" ? handleDeleteConvo : modalType === "leave" ? handleLeaveConvo : handleKickMember}
          cancelFunc={cancelFunc}
+      />
+      <ImageModal
+         imgSrc={conversation?.group_img_url ?? ""}
+         isOpen={isImgModalOpen}
+         setIsOpen={setIsImgModalOpen}
+         conversationId={conversationId}
       />
    </div>
 }
