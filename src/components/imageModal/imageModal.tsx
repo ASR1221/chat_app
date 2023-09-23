@@ -28,7 +28,7 @@ export default function ImageModal({ imgSrc, conversationId, isOpen, setIsOpen }
     
       const link = document.createElement('a');
       link.href = imageURL;
-      link.download = imgSrc.split("https://mhlqhssqzsezzhgonlxp.supabase.co/storage/v1/object/public/chat/group_images/")[1];
+      link.download = "Chatty image";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -79,7 +79,7 @@ export default function ImageModal({ imgSrc, conversationId, isOpen, setIsOpen }
 
    }, [isOpen]);
 
-   return <dialog ref={dialogRef} className="bg-transparent backdrop:bg-black/70 w-[90vw] max-w-xl overflow-hidden">
+   return <dialog ref={dialogRef} className="bg-transparent backdrop:bg-black/70 max-w-xl overflow-hidden">
       <img src={imgSrc} className="max-w-xl max-h-[65vh]"/>
 
       <div className={`grid grid-cols-2 ${conversationId && "sm:grid-cols-4"} gap-3 mt-6`}>
