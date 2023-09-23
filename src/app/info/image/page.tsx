@@ -26,10 +26,11 @@ export default function ProfileImage() {
       }
 
       if (image?.includes("/images/avatars/avatar-")) {
+         const file = URL.revokeObjectURL(image) as unknown as File;
          const { error } = await clientSupabase
             .from("users")
             .update({
-               profile_img_url: image
+               profile_img_url: `/images/avatars/${file.name}`,
             })
             .eq("id", userId);
 
