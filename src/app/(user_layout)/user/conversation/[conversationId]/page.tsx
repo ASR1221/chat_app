@@ -59,7 +59,7 @@ export default function Conversation() {
             }
          }
          if (message?.file_url) {
-            await clientSupabase.storage.from("chat").remove([message.file_url]);
+            await clientSupabase.storage.from("chat").remove([message.file_url.split("https://mhlqhssqzsezzhgonlxp.supabase.co/storage/v1/object/public/chat/")[1]]);
          }
          
          deleteMsgIdRef.current = "";
