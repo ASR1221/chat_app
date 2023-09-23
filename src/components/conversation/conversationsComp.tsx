@@ -1,7 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import type { Convo } from "@/providers/realtimeProvider";
-import Image from "next/image";
 
 export default function ConversationsComp({ conversations, userId }: { conversations: Convo[], userId: string }) { 
 
@@ -42,7 +42,8 @@ export default function ConversationsComp({ conversations, userId }: { conversat
                      alt="conversation image"
                      width={0} height={0}
                      sizes="100vw"
-                     style={{ width: '100%', height: 'auto' }}
+                     style={{ width: '100%', height: '100%' }}
+                     className="aspect-sqare object-cover"
                   />}
                </div>
 
