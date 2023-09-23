@@ -45,11 +45,7 @@ export default function ConversationInfo() {
 
    useEffect(() => {
       setConvoName(conversation?.name ?? "");
-   }, [conversation])
-
-   function handleOpenImage() {
-
-   }
+   }, [conversation]);
 
    function cancelFunc() {
       setIsModalOpen(false);
@@ -57,6 +53,7 @@ export default function ConversationInfo() {
    }
 
    async function handleRename() {
+      if (!isOwner) return;
       if (convoName && convoName !== conversation?.name && convoName.trim()) {
          setIsLoading(true);
          const response = await clientSupabase.from("conversations")
@@ -227,7 +224,7 @@ export default function ConversationInfo() {
                onChange={(e) => setConvoName(e.target.value)}
             />
 
-            <button
+            {isOwner && <button
                type="button"
                onClick={isRenaming ? handleRename : () => setIsRenaming(p => !p)}
                disabled={isLoading}
@@ -239,7 +236,7 @@ export default function ConversationInfo() {
                      <div className="h-[2px] w-7 -rotate-45 bg-green-color" />
                   </div> : <EditIcon width={25} isDark={isDark} />
                }
-            </button>
+            </button>}
 
          </section>
 
@@ -303,7 +300,7 @@ export default function ConversationInfo() {
          imgSrc={conversation?.group_img_url ?? ""}
          isOpen={isImgModalOpen}
          setIsOpen={setIsImgModalOpen}
-         conversationId={conversationId}
+         conversationId={isOwner ? conversationId : undefined}
       />
    </div>
 }
