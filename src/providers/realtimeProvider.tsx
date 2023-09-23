@@ -253,6 +253,16 @@ export default function RealtimeProvider(props: any) {
       }
    }
 
+   function updateConvoInfo(payload: any) {
+
+      const newConvo = payload.new as Conversation;
+
+      setConvos(p => p.map(convo => {
+         if (convo.id === newConvo.id) return { ...convo, ...newConvo };
+         return convo;
+      }));
+   }
+
 
    useEffect(() => {
 
@@ -273,15 +283,20 @@ export default function RealtimeProvider(props: any) {
       fetchAll();
       
       const messagesChannel = clientSupabase.channel("allMessages")
-         .on("postgres_changes", { event: '*', schema: 'public', table: 'messages' }, handleMessagesChanges).subscribe()
+         .on("postgres_changes", { event: '*', schema: 'public', table: 'messages' }, handleMessagesChanges).subscribe();
       
       const convoChannel = clientSupabase.channel("allConversations")
-         .on("postgres_changes", { event: '*', schema: 'public', table: 'conversation_user', filter: `user_id=eq.${userId}` }, addNewConvo).subscribe()
+         .on("postgres_changes", { event: '*', schema: 'public', table: 'conversation_user', filter: `user_id=eq.${userId}` }, addNewConvo).subscribe();
 
+      const convoInfoChannel = clientSupabase.channel("allupdatesConvos")
+         .on("postgres_changes", { event: 'UPDATE', schema: 'public', table: 'conversations' }, updateConvoInfo).subscribe();
+
+      
       return () => {
          authListener.subscription.unsubscribe();
          messagesChannel.unsubscribe();
          convoChannel.unsubscribe();
+         convoInfoChannel.unsubscribe();
       };
 
    }, [userId]);
