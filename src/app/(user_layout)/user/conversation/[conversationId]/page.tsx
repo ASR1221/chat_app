@@ -189,13 +189,18 @@ export default function Conversation() {
 
       {/* Main messages section */}
       <main className="py-20 px-3 grid grid-cols-1 bg-bg-color" ref={containerRef}>
+
          <div ref={infiniteScrollRef} />
+
          {conversation?.messages && (!conversation?.messages.length && !msgPlaceHolder.length) ? <div className="w-fit mx-auto mt-32">
+            
             <div className="w-[300px] mx-auto">
                <img src="/images/illustrations/No data-pana.svg" alt="Empty chat illustration" />
             </div>
             <p>No messages yet. Write a message and it will be seen here.</p>
+
          </div> : conversation?.messages?.map((msg, i) => {
+
             const isEnd = conversation.messages && conversation.messages[i - 1] ? !(msg.sender_id === conversation.messages[i - 1].sender_id &&
                Date.parse(conversation.messages[i - 1].created_at) - Date.parse(msg.created_at) < 120 * 1000) : true;
 
@@ -206,23 +211,20 @@ export default function Conversation() {
 
             if (date2 && date1.getDay() !== date2.getDay()) 
                date = date1.toLocaleDateString(undefined, { year: "numeric", month: "2-digit", day: "2-digit", weekday: "short" });
-            
                         
             return !(msg.body || msg.file_url) ? null : <div
                style={{ order: conversation.messages?.length && conversation.messages?.length - i }}
                className={`w-[100%] ${isEnd ? "mb-[12px]" : "mb-[1px]"}`}
             >
                {
-                     date && <p className="text-center text-sm font-sans mt-1 mb-2 pointer-events-none">{date}</p>
-                  }
+                  date && <p className="text-center text-sm font-sans mt-1 mb-2 pointer-events-none">{date}</p>
+               }
                <div
                   role="button"
                   key={i}
                   onClick={() => setIsDeleteVisibleId(p => p === i ? null : i)}
-                  // style={{ order: conversation.messages?.length && conversation.messages?.length - i }}
                   className={`w-[100%] cursor-pointer ${(msg.sender_id !== userId || isDeleteVisibleId === i) ? "flex gap-4" : ""} ${isDeleteVisibleId === i && msg.sender_id === userId ? "justify-end" : ""}`}
-               >
-                  
+               > 
                   {
                      msg.sender_id !== userId && <div className="rounded-sm overflow-hidden w-14 aspect-square">
                         {
@@ -256,7 +258,8 @@ export default function Conversation() {
             </div>;
          })}
          {
-            msgPlaceHolder && msgPlaceHolder.length > 0 && msgPlaceHolder.map((msg, i) => <div key={i} className="w-[100%]" style={{order: 9999900 + i}}>
+            msgPlaceHolder && msgPlaceHolder.length > 0 &&
+            msgPlaceHolder.map((msg, i) => <div key={i} className="w-[100%]" style={{ order: 9999900 + i }}>
                <div
                   onClick={() => {
                      if (isError) {
@@ -286,7 +289,8 @@ export default function Conversation() {
                </div>
             )
          }
-         <div ref={msgScrollRef} style={{order: 100000000}} className="mb-4" />
+         <div ref={msgScrollRef} style={{ order: 100000000 }} className="mb-4" />
+         
       </main>
 
       {/* Textinput, send and attachment  */}
