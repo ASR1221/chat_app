@@ -198,14 +198,31 @@ export default function Conversation() {
          </div> : conversation?.messages?.map((msg, i) => {
             const isEnd = conversation.messages && conversation.messages[i - 1] ? !(msg.sender_id === conversation.messages[i - 1].sender_id &&
                Date.parse(conversation.messages[i - 1].created_at) - Date.parse(msg.created_at) < 120 * 1000) : true;
+
+            const date1 = new Date(msg.created_at);
+            const date2 = new Date(conversation.messages && conversation.messages[i - 1] ? conversation.messages[i - 1].created_at : "");
+
+            let date = "";
+
+            if (date2 && date1.getDay() !== date2.getDay()) 
+               date = date1.toLocaleDateString(undefined, { year: "numeric", month: "2-digit", day: "2-digit", weekday: "short" });
+            
                         
-            return !(msg.body || msg.file_url) ? null :
+            return !(msg.body || msg.file_url) ? null : <div
+               style={{ order: conversation.messages?.length && conversation.messages?.length - i }}
+               className={`w-[100%] ${isEnd ? "mb-[12px]" : "mb-[1px]"}`}
+            >
+               {
+                     date && <p className="text-center text-sm font-sans mt-1 mb-2 pointer-events-none">{date}</p>
+                  }
                <div
+                  role="button"
                   key={i}
                   onClick={() => setIsDeleteVisibleId(p => p === i ? null : i)}
-                  style={{ order: conversation.messages?.length && conversation.messages?.length - i }}
-                  className={`w-[100%] cursor-pointer ${isEnd ? "mb-[12px]" : "mb-[1px]"} ${(msg.sender_id !== userId || isDeleteVisibleId === i) ? "flex gap-4" : ""} ${isDeleteVisibleId === i && msg.sender_id === userId ? "justify-end" : ""}`}
+                  // style={{ order: conversation.messages?.length && conversation.messages?.length - i }}
+                  className={`w-[100%] cursor-pointer ${(msg.sender_id !== userId || isDeleteVisibleId === i) ? "flex gap-4" : ""} ${isDeleteVisibleId === i && msg.sender_id === userId ? "justify-end" : ""}`}
                >
+                  
                   {
                      msg.sender_id !== userId && <div className="rounded-sm overflow-hidden w-14 aspect-square">
                         {
@@ -235,7 +252,8 @@ export default function Conversation() {
                      userId={userId}
                      isEnd={isEnd}
                   />
-               </div>;
+               </div>
+            </div>;
          })}
          {
             msgPlaceHolder && msgPlaceHolder.length > 0 && msgPlaceHolder.map((msg, i) => <div key={i} className="w-[100%]" style={{order: 9999900 + i}}>
