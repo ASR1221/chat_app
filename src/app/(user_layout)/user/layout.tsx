@@ -8,9 +8,9 @@ import { useRealtime } from "@/providers/realtimeProvider";
 import useTheme from "@/hooks/useTheme";
 
 import OptionsModal from "@/components/optionsModal/optionsModal";
-import ConversationsComp from "@/components/conversation/conversationsComp";
 import SearchIcon from "@/svgs/searchIcon";
 import OptionsIcon from "@/components/optionsIcon/optionsIcon";
+import ConvoListItem from "@/components/convoListItem/convoListItem";
 
 // TODO: make create convos with accept multiple users
 // TODO: check if realtime needed for 'conversations'
@@ -42,7 +42,22 @@ export default function UserLayout({ children }: { children: ReactNode }) {
       <OptionsModal />
       
       <div className="px-4 w-[100%] md:w-[370px] fixed mt-20">
-         <ConversationsComp conversations={convos} userId={userId} />
+         <section className="[&>*:not(:last-child)]:border-b-[1px] [&>*]:border-devider-line-color">
+            {
+               !convos.length ? <div className="w-fit mx-auto mt-32">
+                  <div className="w-[300px] mx-auto">
+                     <img src="/images/illustrations/No data-pana.svg" alt="Empty chat illustration" />
+                  </div>
+                  <p>No Conversation yet. Create a conversation and it will be seen here.</p>
+               </div> : convos.map(convo =>
+                  <ConvoListItem
+                     key={convo.id}
+                     convo={convo}
+                     userId={userId}
+                  />
+               )
+            }
+         </section>
       </div>
       <Link
          href="/user/conversation/add"
