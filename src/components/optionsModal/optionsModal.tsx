@@ -28,9 +28,9 @@ export default function OptionsModal() {
    function handleCloseTheme() {
       setIsthemeOpen(p => {
          if (p)
-            mRef.current?.children[0].setAttribute("style", "height: 110px; width: 120px; padding-block: 5px");
+            mRef.current?.children[0].setAttribute("style", "height: 142px; width: 120px; padding-block: 5px");
          else
-            mRef.current?.children[0].setAttribute("style", "height: 230px; width: 120px; padding-block: 5px");
+            mRef.current?.children[0].setAttribute("style", "height: 263px; width: 120px; padding-block: 5px");
          return !p;
       });
    }
@@ -40,7 +40,7 @@ export default function OptionsModal() {
       if (optionsParam.get("options") === "true") {
          mRef.current?.showModal();
          if (mRef.current)
-            mRef.current.children[0].setAttribute("style", "height: 110px; width: 120px; padding-block: 5px");
+            mRef.current.children[0].setAttribute("style", "height: 142px; width: 120px; padding-block: 5px");
       }
       else {
          if (mRef.current)
@@ -74,14 +74,18 @@ export default function OptionsModal() {
    >
       <ul className="overflow-hidden transition-[width_height_padding] ease-linear" style={{ height: "0px", width: "0px" }}>
          
-         <li className={`border-b-[1px] border-devider-line-color py-1 px-1 hover:bg-gray-${isDark ? "6" : "3"}00`}>
-            <Link href="/user/profile" className="text-text-color">Profile</Link>
+         <li className={`border-b-[1px] border-devider-line-color py-1 px-1 ${isDark ? "hover:bg-gray-600" : "hover:bg-gray-200"}`}>
+            <Link href="/user/profile" className="text-text-color block">Profile</Link>
+         </li>
+
+         <li className={`border-b-[1px] border-devider-line-color py-1 px-1 ${isDark ? "hover:bg-gray-600" : "hover:bg-gray-200"}`}>
+            <Link href="/user/contacts" className="text-text-color block">Contacts</Link>
          </li>
 
          <li className="border-b-[1px] border-devider-line-color">
             <button
                type="button"
-               className={`w-[100%] py-1 px-1 text-left text-text-color hover:bg-gray-${isDark ? "6" : "3"}00`}
+               className={`w-[100%] py-1 px-1 text-left text-text-color ${isDark ? "hover:bg-gray-600" : "hover:bg-gray-200"}`}
                onClick={handleCloseTheme}
             >Theme
                <span className="w-fit float-right">{isThemeOpen ? "-" : "+"}</span>
@@ -135,8 +139,8 @@ export default function OptionsModal() {
             }
          </li> */}
 
-         <li className={`py-1 px-1 hover:bg-gray-${isDark ? "6" : "3"}00`}>
-            <button type="button" onClick={handleSignOut}  className="text-red-color w-16 overflow-hidden">Log Out</button>
+         <li className={`py-1 px-1 ${isDark ? "hover:bg-gray-600" : "hover:bg-gray-200"}`}>
+            <button type="button" onClick={handleSignOut}  className="text-red-color w-[100%] text-left overflow-hidden">Log Out</button>
          </li>
 
       </ul>
