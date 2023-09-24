@@ -12,6 +12,8 @@ import Link from "next/link";
 import SimpleNav from "@/components/simpleNav/simpleNav";
 import ConfirmationModal from "@/components/confirmationModal/confirmationModal";
 import ImageModal from "@/components/imageModal/imageModal";
+import UserListItem from "@/components/userListItem/userListItem";
+import TextInputEdit from "@/components/textInputEdit/textInputEdit";
 
 
 export default function ConversationInfo() {
@@ -34,7 +36,6 @@ export default function ConversationInfo() {
    const [isError, setIsError] = useState(false);
    const [isLoading, setIsLoading] = useState(false);
 
-   const [isRenaming, setIsRenaming] = useState(false);
    const [convoName, setConvoName] = useState("");
 
    const [isModalOpen, setIsModalOpen] = useState(false);
@@ -69,7 +70,6 @@ export default function ConversationInfo() {
       }
       
       setIsLoading(false);
-      setIsRenaming(false);
    }
 
    async function handleDeleteConvo() {
@@ -216,27 +216,14 @@ export default function ConversationInfo() {
                </label>
             }
 
-            <input
-               type="text"
-               className="py-1 px-2 bg-bg-color border-b-[1px] border-text-color outline-none disabled:border-b-0"
-               disabled={!isRenaming || isLoading}
-               value={convoName}
-               onChange={(e) => setConvoName(e.target.value)}
+            <TextInputEdit
+               isLoading={isLoading}
+               isDark={isDark}
+               isOwner={isOwner ?? false}
+               textValue={convoName}
+               setTextValue={setConvoName}
+               handleEditSubmit={handleRename}
             />
-
-            {isOwner && <button
-               type="button"
-               onClick={isRenaming ? handleRename : () => setIsRenaming(p => !p)}
-               disabled={isLoading}
-               className="ml-3 p-1"
-            >
-               {
-                  isRenaming ? <div className="relative">
-                     <div className="h-[2px] w-4 rotate-45 bg-green-color absolute -left-2 top-1" />
-                     <div className="h-[2px] w-7 -rotate-45 bg-green-color" />
-                  </div> : <EditIcon width={25} isDark={isDark} />
-               }
-            </button>}
 
          </section>
 
@@ -254,16 +241,14 @@ export default function ConversationInfo() {
          <section className="px-2 py-4 border-t-[1px] border-devider-line-color">
             <h3>Members</h3>
             {
-               conversation?.users.map(user => <div key={user.id} className="grid grid-cols-[10%_75%_10%] gap-5 items-center py-3">
+               conversation?.users.map(user => <div key={user.id} className="grid grid-cols-[85%_10%] gap-5 items-center py-3">
 
-                  <div className="rounded-md overflow-hidden aspect-square bg-devider-line-color min-w-[40px] max-w-[55px]">
-                     {user.profile_img_url && <img src={user.profile_img_url} alt={`${user.user_name} profile image`} className="w-[100%] aspect-square object-cover" />}
-                  </div>
-
-                  <Link href={`/user/profile/${user.id}`} className="grid grid-cols-1">
-                     <p className="text-lg">{user.user_name}</p>
-                     <p className="text-devider-line-color text-sm">{isOwner ? "Owner" : "Member"}</p>
-                  </Link>
+                  <UserListItem 
+                     id={user.id}
+                     profile_img_url={user.profile_img_url}
+                     user_name={user.user_name}
+                     isOwner={isOwner}
+                  />
 
                   <div>
                      {
