@@ -247,7 +247,8 @@ export default function ConversationInfo() {
                      id={user.id}
                      profile_img_url={user.profile_img_url}
                      user_name={user.user_name}
-                     isOwner={isOwner}
+                     full_name={user.full_name}
+                     isOwner={user.is_owner[0].is_owner}
                   />
 
                   <div>
