@@ -17,7 +17,7 @@ export type Convo = Omit<Conversation, "created_at"> & {
 };
 
 type Contact = {
-   users: Omit<User, "created_at">[]
+   users: Omit<User, "created_at">
 };
 
 type MsgPlaceHolder = {
@@ -138,7 +138,8 @@ export default function RealtimeProvider(props: any) {
 
          setConvos(final);
 
-         setConts(response3.data)
+         const c = response3.data as unknown as Contact[];
+         setConts(c)
 
       } catch (e: any) {
          throw new Error(e.message);
