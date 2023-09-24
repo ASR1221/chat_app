@@ -22,13 +22,14 @@ export default function Contacts() {
             
             const user = contact.users;
             
-            return <UserListItem
-               key={user.id}
-               id={user.id}
-               profile_img_url={user.profile_img_url}
-               user_name={user.user_name}
-               full_name={user.full_name}
-            />
+            return <div key={user.id} className="[&>*:not(:last-child)]:border-b-[1px] [&>*]:border-devider-line-color">
+               <UserListItem
+                  id={user.id}
+                  profile_img_url={user.profile_img_url}
+                  user_name={user.user_name}
+                  full_name={user.full_name}
+               />
+            </div>
          })
       }
    </div>
