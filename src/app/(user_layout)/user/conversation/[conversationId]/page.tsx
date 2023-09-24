@@ -183,7 +183,7 @@ export default function Conversation() {
    }, [convos]);
 
 
-   return <>
+   return <div className="absolute top-0 bottom-0 bg-bg-color w-[100%]">
       {/* nav section */}
       <ConversationNav conversation={conversation} isDark={isDark} pathname={pathname} />
 
@@ -313,5 +313,5 @@ export default function Conversation() {
          confirmFunc={modalConfirmFunc}
          cancelFunc={modalCancelFunc}
       />
-   </>
+   </div>
 }
