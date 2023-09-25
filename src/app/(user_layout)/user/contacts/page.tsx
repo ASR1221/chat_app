@@ -4,6 +4,7 @@ import { useRealtime } from "@/providers/realtimeProvider";
 
 import UserListItem from "@/components/userListItem/userListItem";
 import SimpleNav from "@/components/simpleNav/simpleNav";
+import EmptyList from "@/components/emptyList/emptyList";
 
 export default function Contacts() {
 
@@ -13,12 +14,8 @@ export default function Contacts() {
       <SimpleNav backPath="/user" />
       <h2 className="text-3xl py-5">Contacts</h2>
       {
-         conts?.length < 1 ? <div className="w-fit mx-auto mt-32">
-            <div className="w-[300px] mx-auto">
-               <img src="/images/illustrations/No data-pana.svg" alt="Empty chat illustration" />
-            </div>
-            <p>No Contacts yet. Add a contacts and it will be seen here.</p>
-         </div> : conts?.flatMap(contact => {
+         conts?.length < 1 ? <EmptyList text="No Contacts yet. Add a contacts and it will be seen here." />
+         : conts?.flatMap(contact => {
             
             const user = contact.users;
             
