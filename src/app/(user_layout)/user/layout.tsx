@@ -11,6 +11,7 @@ import OptionsModal from "@/components/optionsModal/optionsModal";
 import SearchIcon from "@/svgs/searchIcon";
 import OptionsIcon from "@/components/optionsIcon/optionsIcon";
 import ConvoListItem from "@/components/convoListItem/convoListItem";
+import EmptyList from "@/components/emptyList/emptyList";
 
 // TODO: make create convos with accept multiple users
 // TODO: check if realtime needed for 'conversations'
@@ -44,12 +45,8 @@ export default function UserLayout({ children }: { children: ReactNode }) {
       <div className="px-4 w-[100%] md:w-[370px] fixed mt-20">
          <section className="[&>*:not(:last-child)]:border-b-[1px] [&>*]:border-devider-line-color">
             {
-               !convos.length ? <div className="w-fit mx-auto mt-32">
-                  <div className="w-[300px] mx-auto">
-                     <img src="/images/illustrations/No data-pana.svg" alt="Empty chat illustration" />
-                  </div>
-                  <p>No Conversation yet. Create a conversation and it will be seen here.</p>
-               </div> : convos.map(convo =>
+               !convos.length ? <EmptyList text="No Conversation yet. Create a conversation and it will be seen here." />
+               : convos.map(convo =>
                   <ConvoListItem
                      key={convo.id}
                      convo={convo}
