@@ -18,6 +18,7 @@ import useIsIntersecting from "@/hooks/useIsIntersecting";
 import ConfirmationModal from "@/components/confirmationModal/confirmationModal";
 import ConversationNav from "@/components/conversationNav/conversationNav";
 import ConversationSendComp from "@/components/conversationSendComp/conversationSendComp";
+import EmptyList from "@/components/emptyList/emptyList";
 
 export default function Conversation() {
    const pathname = usePathname();
@@ -192,14 +193,8 @@ export default function Conversation() {
 
          <div ref={infiniteScrollRef} />
 
-         {conversation?.messages && (!conversation?.messages.length && !msgPlaceHolder.length) ? <div className="w-fit mx-auto mt-32">
-            
-            <div className="w-[300px] mx-auto">
-               <img src="/images/illustrations/No data-pana.svg" alt="Empty chat illustration" />
-            </div>
-            <p>No messages yet. Write a message and it will be seen here.</p>
-
-         </div> : conversation?.messages?.map((msg, i) => {
+         {conversation?.messages && (!conversation?.messages.length && !msgPlaceHolder.length) ? <EmptyList text="No messages yet. Write a message and it will be seen here." />
+         : conversation?.messages?.map((msg, i) => {
 
             const isEnd = conversation.messages && conversation.messages[i - 1] ? !(msg.sender_id === conversation.messages[i - 1].sender_id &&
                Date.parse(conversation.messages[i - 1].created_at) - Date.parse(msg.created_at) < 120 * 1000) : true;
@@ -213,6 +208,7 @@ export default function Conversation() {
                date = date1.toLocaleDateString(undefined, { year: "numeric", month: "2-digit", day: "2-digit", weekday: "short" });
                         
             return !(msg.body || msg.file_url) ? null : <div
+               key={i}
                style={{ order: conversation.messages?.length && conversation.messages?.length - i }}
                className={`w-[100%] ${isEnd ? "mb-[12px]" : "mb-[1px]"}`}
             >
