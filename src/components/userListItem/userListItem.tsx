@@ -11,7 +11,7 @@ type Props = {
 export default function UserListItem({ id, profile_img_url, user_name, full_name, isOwner}: Props) {
 
    return <Link href={`/user/profile/${id}`} className="grid grid-cols-[16%_80%] gap-5">
-      <div className="rounded-md overflow-hidden aspect-square bg-devider-line-color min-w-[40px] max-w-[55px]">
+      <div className="rounded-md overflow-hidden aspect-square bg-devider-line-color min-w-[50px] max-w-[55px]">
          {profile_img_url && <img src={profile_img_url} alt={`${user_name} profile image`} className="w-[100%] aspect-square object-cover" />}
       </div>
 
