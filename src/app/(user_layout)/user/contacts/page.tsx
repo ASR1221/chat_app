@@ -38,21 +38,23 @@ export default function Contacts() {
          />
       </form>
 
-      {
-         currentConts && (currentConts.length < 1 ? <EmptyList text="No Contacts yet. Add a contacts and it will be seen here." />
-         : currentConts?.flatMap(contact => {
-            
-            const user = contact.users;
-            
-            return <div key={user.id} className="[&>*:not(:last-child)]:border-b-[1px] [&>*]:border-devider-line-color">
-               <UserListItem
-                  id={user.id}
-                  profile_img_url={user.profile_img_url}
-                  user_name={user.user_name}
-                  full_name={user.full_name}
-               />
-            </div>
-         }))
-      }
+      <section className="[&>*:not(:last-child)]:border-b-[1px] [&>*]:border-devider-line-color">
+         {
+            currentConts && (currentConts.length < 1 ? <EmptyList text="No Contacts yet. Add a contacts and it will be seen here." />
+            : currentConts?.flatMap(contact => {
+               
+               const user = contact.users;
+               
+               return <div key={user.id}>
+                  <UserListItem
+                     id={user.id}
+                     profile_img_url={user.profile_img_url}
+                     user_name={user.user_name}
+                     full_name={user.full_name}
+                  />
+               </div>
+            }))
+         }
+      </section>
    </div>
 }
