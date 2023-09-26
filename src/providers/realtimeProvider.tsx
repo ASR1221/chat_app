@@ -139,7 +139,7 @@ export default function RealtimeProvider(props: any) {
          setConvos(final);
 
          const c = response3.data as unknown as Contact[];
-         setConts(c)
+         setConts(c.sort((current, prev) => current.users.user_name.localeCompare(prev.users.user_name)))
 
       } catch (e: any) {
          throw new Error(e.message);
@@ -220,7 +220,18 @@ export default function RealtimeProvider(props: any) {
       if (payload.errors) throw new Error("Some thing went wrong. Please refresh the page.");
             
       if (payload.eventType === "DELETE") {
-         setConvos(prev => prev.filter(c => c.id !== payload.old.conversation_id));
+         setConvos(prev => {
+            if (userId === payload.old.user_id)
+               return prev.filter(c => c.id !== payload.old.conversation_id);
+
+            const updated = prev.find(p => p.id === payload.old.conversation_id);
+            const newUsers = updated?.users.filter(u => u.id !== payload.old.user_id);
+            
+            return prev.map(p => {
+               if (updated && newUsers && p.id === updated.id) return { ...updated, users: newUsers };
+               return p;
+            });
+         });
       }
       
       if (payload.eventType === "INSERT") {
@@ -237,19 +248,32 @@ export default function RealtimeProvider(props: any) {
                bio,
                profile_img_url,
                is_owner:conversation_user(is_owner)
-            ),
-            messages(*)
+            )
          `).eq("id", newConvo.conversation_id)
             .then(response => {
                
                if (response.error) throw new Error(response.error.message);
                
-               if (response.data && response.data.length > 0) 
-                  setConvos(prev => {
-                     const updated = prev;
-                     updated.push(response.data[0]);
-                     return updated;
-                  });
+               if (response.data && response.data.length > 0) {
+
+                  const promises = clientSupabase
+                     .from("messages")
+                     .select()
+                     .eq("conversation_id", response.data[0].id)
+                     .order("created_at", { ascending: false })
+                     .limit(15).then(response2 => {
+                        const final = {
+                           ...response.data[0],
+                           messages: response2.data,
+                        };
+   
+                        setConvos(prev => {
+                           const updated = prev;
+                           const x = updated.filter(u => u.id !== final.id);
+                           return [...x, final];
+                        });
+                     });
+               }
             });
       }
    }
@@ -287,7 +311,7 @@ export default function RealtimeProvider(props: any) {
          .on("postgres_changes", { event: '*', schema: 'public', table: 'messages' }, handleMessagesChanges).subscribe();
       
       const convoChannel = clientSupabase.channel("allConversations")
-         .on("postgres_changes", { event: '*', schema: 'public', table: 'conversation_user', filter: `user_id=eq.${userId}` }, addNewConvo).subscribe();
+         .on("postgres_changes", { event: '*', schema: 'public', table: 'conversation_user' }, addNewConvo).subscribe();
 
       const convoInfoChannel = clientSupabase.channel("allupdatesConvos")
          .on("postgres_changes", { event: 'UPDATE', schema: 'public', table: 'conversations' }, updateConvoInfo).subscribe();
