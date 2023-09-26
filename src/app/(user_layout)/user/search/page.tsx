@@ -65,7 +65,7 @@ export default function Search() {
    }, [searchTerm]);
 
    return <div className="absolute top-0 bottom-0 bg-bg-color w-[100%] px-5 py-24">
-      <SimpleNav backPath="/user" />
+      <SimpleNav backPath="/user" header="Search" />
 
       <form onSubmit={handleSubmit}>
          <input
