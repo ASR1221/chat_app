@@ -172,7 +172,9 @@ export default function ConversationInfo() {
          return;
       }
 
-      clientSupabase.storage.from("chat").remove([...imgsResonse.data.flatMap(m => m.file_url ?? [])]);
+      const imgExsist = imgsResonse.data.some(d => d.file_url ? true : false);
+      if (imgExsist)
+         clientSupabase.storage.from("chat").remove([...imgsResonse.data.flatMap(m => m.file_url ?? [])]);
 
       setIsModalOpen(false);
       setKickedUser(null);
