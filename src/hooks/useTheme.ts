@@ -9,6 +9,7 @@ export default function useTheme() {
 
    useEffect(() => {
       setIsDark(document.documentElement.getAttribute("data-theme") === "dark");
+      setThemeType(!localStorage.getItem("theme") ? 2 : localStorage.getItem("theme") === "dark" ? 1 : 0);
 
       const mutationObserver = new MutationObserver((mutations) => {
          mutations.forEach(mutation => {

@@ -95,17 +95,17 @@ export default function OptionsModal() {
                <section className={`${isThemeOpen ? "h-[120px]" : "h-[0]"} overflow-hidden transition-[height] ease-linear`}>
 
                   <button type="button" onClick={() => setTheme("light")} className="grid grid-cols-[1fr_2fr_4fr] items-center gap-2 p-2 cursor-pointer group">
-                     <div className={`aspect-square rounded-full bg-text-color opacity-${themeType === 0 ? "1" : "0"}`}></div>
+                     <div className={`aspect-square rounded-full bg-text-color ${themeType === 0 ? "opacity-1" : "opacity-0"}`}></div>
                      <div className="aspect-square rounded-sm bg-white border-[1px] border-devider-line-color group-hover:border-text-color"></div>
                      <p className="group-hover:pl-1 transition-all">Light</p>
                   </button>
                   <button type="button" onClick={() => setTheme("dark")} className="grid grid-cols-[1fr_2fr_4fr] items-center gap-2 p-2 cursor-pointer group">
-                     <div className={`aspect-square rounded-full bg-text-color opacity-${themeType === 1 ? "1" : "0"}`}></div>
+                     <div className={`aspect-square rounded-full bg-text-color ${themeType === 1 ? "opacity-1" : "opacity-0"}`}></div>
                      <div className="aspect-square rounded-sm bg-[#090909] border-[1px] border-devider-line-color group-hover:border-text-color"></div>
                      <p className="group-hover:pl-1 transition-all">Dark</p>
                   </button>
                   <button type="button" onClick={() => setTheme("system")} className="grid grid-cols-[1fr_2fr_6fr] items-center gap-2 p-2 cursor-pointer group">
-                     <div className={`aspect-square rounded-full bg-text-color opacity-${themeType === 2 ? "1" : "0"}`}></div>
+                     <div className={`aspect-square rounded-full bg-text-color ${themeType === 2 ? "opacity-1" : "opacity-0"}`}></div>
                      <div className="grid grid-cols-2 aspect-square border-[1px] border-devider-line-color group-hover:border-text-color">
                         <div className="rounded-s-sm bg-[#090909]"></div>
                         <div className="rounded-e-sm bg-white"></div>
