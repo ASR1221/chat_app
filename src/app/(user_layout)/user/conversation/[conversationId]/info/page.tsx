@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState, useEffect, BaseSyntheticEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 
@@ -7,13 +8,12 @@ import { clientSupabase } from "@/utils/clientSupabase";
 import { useRealtime } from "@/providers/realtimeProvider";
 import useTheme from "@/hooks/useTheme";
 
-import EditIcon from "@/svgs/editIcon";
-import Link from "next/link";
 import SimpleNav from "@/components/simpleNav/simpleNav";
 import ConfirmationModal from "@/components/confirmationModal/confirmationModal";
 import ImageModal from "@/components/imageModal/imageModal";
 import UserListItem from "@/components/userListItem/userListItem";
 import TextInputEdit from "@/components/textInputEdit/textInputEdit";
+import AddUserIcon from "@/svgs/addUserIcon";
 
 
 export default function ConversationInfo() {
@@ -228,6 +228,7 @@ export default function ConversationInfo() {
          </section>
 
          <button
+            type="button"
             className="flex items-center gap-4 w-[100%] p-2 my-2 group hover:gap-5 transition-all"
             onClick={() => {
                setModalType(isOwner ? "delete" : "leave");
@@ -238,10 +239,10 @@ export default function ConversationInfo() {
             <p>{isOwner ? "Delete Chat" : "Leave Chat"}</p>
          </button>
          
-         <section className="px-2 py-4 border-t-[1px] border-devider-line-color">
+         <ul className="px-2 py-4 border-t-[1px] border-devider-line-color">
             <h3>Members</h3>
             {
-               conversation?.users.map(user => <div key={user.id} className="grid grid-cols-[85%_10%] gap-5 items-center py-3">
+               conversation?.users.map(user => <li key={user.id} className="grid grid-cols-[85%_10%] gap-5 items-center py-3">
 
                   <UserListItem 
                      id={user.id}
@@ -265,9 +266,17 @@ export default function ConversationInfo() {
                      }
                   </div>
 
-               </div>)
-            }
-         </section>
+               </li>)
+            }            
+         </ul>
+
+         <Link href={`/user/conversation/${conversationId}/info/add`} className="grid grid-cols-[15%_85%] gap-5 items-center py-2 border-t-[1px] border-devider-line-color">
+            <div className="px-4 py-2 min-w-[40px] max-w-[70px]">
+               <AddUserIcon width={45} />
+            </div>
+            <p>Add a member</p>
+         </Link>
+
       </div>
       <ConfirmationModal 
          isOpen={isModalOpen}
