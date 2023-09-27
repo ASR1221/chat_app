@@ -21,6 +21,7 @@ export default function DUserProfile() {
    const [isImgOpen, setIsImgOpen] = useState(false);
    
    const [dUser, setDUser] = useState<Omit<User, "created_at"> | null>(null);
+   const [isCont, setIsCont] = useState(false);
    const [isLoading, setIsLoading] = useState(false);
    const [isError, setIsError] = useState(false);
 
@@ -127,6 +128,7 @@ export default function DUserProfile() {
          .then(res => {
             if (res.error) throw new Error("Something went wrong. Please refresh the page");
             setDUser(res.data[0]);
+            setIsCont(conts.find(c => c.users.id === res.data[0].id) ? true : false);
          });
    }, [dUserId])
 
@@ -172,9 +174,9 @@ export default function DUserProfile() {
             >New Chat</button>
             <button
                type="button"
-               onClick={conts.find(c => c.users.id === dUser?.id) ? handleRemoveFromConts : handleAddToConts}
-               className="p-1 bg-btn-color rounded-md hover:bg-btn-border-color text-white text-center transition-all duration-300"
-            >{conts.find(c => c.users.id === dUser?.id) ? "Remove From Contacts" : "Add To Contacts"}</button>
+               onClick={isCont ? handleRemoveFromConts : handleAddToConts}
+               className={`p-1 ${isCont ? "bg-red-color hover:bg-red-700" : "bg-btn-color hover:bg-btn-border-color"} rounded-md text-white text-center transition-all duration-300`}
+            >{isCont ? "Remove From Contacts" : "Add To Contacts"}</button>
          </div>
       </div>
 
