@@ -11,9 +11,10 @@ type Props = {
    textValue: string,
    setTextValue: (text: string) => void,
    handleEditSubmit: () => void,
+   placeHolder?: string,
 }
 
-export default function TextInputEdit({ isLoading, isDark, isOwner, textValue, setTextValue, handleEditSubmit}: Props) {
+export default function TextInputEdit({ isLoading, isDark, isOwner, textValue, setTextValue, handleEditSubmit, placeHolder}: Props) {
    
    const [isEditing, setIsEditing] = useState(false);
 
@@ -24,6 +25,7 @@ export default function TextInputEdit({ isLoading, isDark, isOwner, textValue, s
          disabled={!isEditing || isLoading}
          value={textValue}
          onChange={(e) => setTextValue(e.target.value)}
+         placeholder={placeHolder ?? ""}
       />
 
       {isOwner && <button
