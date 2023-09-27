@@ -59,15 +59,15 @@ export default function UserProfile() {
 
    return <div className="absolute top-0 bottom-0 bg-bg-color w-[100%]">
 
-      <SimpleNav backPath="/user" header="Profile" />
+      <SimpleNav header="Profile" />
 
       <div className="py-20 px-3 max-w-md mx-auto bg-bg-color">
 
          <div className="py-3 relative">
             <button
                type="button"
-               onClick={() => setIsImgOpen(true)}
-               className="w-[100%] aspect-square bg-devider-line-color rounded-md overflow-hidden"
+               onClick={() => user.profile_img_url ? setIsImgOpen(true) : {}}
+               className={`w-[100%] aspect-square bg-devider-line-color rounded-md overflow-hidden ${user.profile_img_url ? "" : "cursor-default"}`}
             >
                {
                   user.profile_img_url &&
