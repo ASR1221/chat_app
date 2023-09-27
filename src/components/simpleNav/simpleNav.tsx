@@ -6,9 +6,9 @@ import useTheme from "@/hooks/useTheme";
 
 import ArrowIcon from "@/svgs/arrowIcon";
 
-export default function SimpleNav({ backPath, header }: { backPath: string, header?: string }) {
+export default function SimpleNav({ backPath, header }: { backPath?: string, header?: string }) {
 
-   const { push } = useRouter();
+   const { push, back } = useRouter();
    const pathname = usePathname();
    const { isDark } = useTheme();
 
@@ -18,7 +18,7 @@ export default function SimpleNav({ backPath, header }: { backPath: string, head
       } w-[100vw] md:w-[calc(100vw-370px)] md:left-[370px] bg-convo-header-bg-color text-convo-header-text-color h-[72px] isolate`}
    >
 
-      <button type="button" onClick={() => push(backPath)} className="pl-2">
+      <button type="button" onClick={() => backPath ? push(backPath) : back()} className="pl-2">
          <ArrowIcon isDark={isDark} width={20} />
       </button>
 
