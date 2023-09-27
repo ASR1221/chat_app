@@ -141,6 +141,7 @@ export default function DUserProfile() {
             <button
                type="button"
                onClick={() => dUser?.profile_img_url ? setIsImgOpen(true) : {}}
+               disabled={isLoading}
                className={`w-[100%] aspect-square bg-devider-line-color rounded-md overflow-hidden ${dUser?.profile_img_url ? "" : "cursor-default"}`}
             >
                {
@@ -170,14 +171,18 @@ export default function DUserProfile() {
             <button
                type="button"
                onClick={handleCreateChat}
+               disabled={isLoading}
                className="p-1 bg-bg-color border-btn-color border-[1px] rounded-md hover:border-btn-border-color text-text-color text-center transition-all duration-300"
             >New Chat</button>
             <button
                type="button"
+               disabled={isLoading}
                onClick={isCont ? handleRemoveFromConts : handleAddToConts}
                className={`p-1 ${isCont ? "bg-red-color hover:bg-red-700" : "bg-btn-color hover:bg-btn-border-color"} rounded-md text-white text-center transition-all duration-300`}
             >{isCont ? "Remove From Contacts" : "Add To Contacts"}</button>
          </div>
+
+         <p>{isError && "Something went wrong. Please refresh the page and try again."}</p>
       </div>
 
       <ImageModal
