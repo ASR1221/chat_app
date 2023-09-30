@@ -45,23 +45,17 @@ export default function AddMemberToConvo() {
       if (selectedConts.length < 1) return;
       if (!conversationId) return;
 
-      const promises: any = [];
+      const insertValue = selectedConts.map(c => ({
+            user_id: c.users.id,
+            conversation_id: conversationId
+         }));
 
-      selectedConts.map(c => {
-         const response = clientSupabase.from("conversation_user")
-            .insert([{
-               user_id: c.users.id,
-               conversation_id: conversationId
-            }]);
-         
-         promises.push(response);
-      });
+      const response = await clientSupabase.from("conversation_user")
+            .insert(insertValue);
 
-      const final = await Promise.all(promises);
+      if (response.error) throw new Error("Something went wrong. Please refresh the page and try again.")
 
-      if (final) {
-         push(`/user/conversation/${conversationId}/info`);
-      }
+      push(`/user/conversation/${conversationId}/info`);
    }
 
    useEffect(() => {
