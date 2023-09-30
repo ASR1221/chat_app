@@ -205,7 +205,7 @@ export default function Conversation() {
             let date = "";
 
             if (date2 && date1.getDay() !== date2.getDay()) 
-               date = date1.toLocaleDateString(undefined, { year: "numeric", month: "2-digit", day: "2-digit", weekday: "short" });
+               date = `${date1.getDay()}/${date1.getMonth() + 1}/${date1.getFullYear()}`;
                         
             return !(msg.body || msg.file_url) ? null : <div
                key={i}
