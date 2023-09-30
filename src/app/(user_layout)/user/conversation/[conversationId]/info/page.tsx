@@ -29,7 +29,7 @@ export default function ConversationInfo() {
    }, [convos, conversationId]);
 
    const isOwner = useMemo(
-      () => conversation?.users.find(u => u.id === userId)?.is_owner[0].is_owner
+      () => conversation?.users.find(u => u.id === userId)?.is_owner
       ,[conversation]
    );
 
@@ -251,7 +251,7 @@ export default function ConversationInfo() {
                      profile_img_url={user.profile_img_url}
                      user_name={user.user_name}
                      full_name={user.full_name}
-                     isOwner={user.is_owner[0].is_owner}
+                     isOwner={user.is_owner}
                   />
 
                   <div>
