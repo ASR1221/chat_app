@@ -119,6 +119,13 @@ export default function DUserProfile() {
          return;
       }
 
+      const MsgResponse = await clientSupabase.from("messages")
+         .insert([{
+            sender_id: dUser.id,
+            body: "Hi, I just created this chat.",
+            conversation_id: newConvoId,
+         }]);
+
       setIsLoading(false);
       push(`/user/conversation/${newConvoId}`);
    }
