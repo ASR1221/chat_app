@@ -10,9 +10,7 @@ export type OUser = Omit<User, "id" | "created_at" | "last_seen">;
 export type Convo = Omit<Conversation, "created_at"> & {
    messages: Message[] | null,
    users: Array<Omit<User, "created_at" | "last_seen"> & {
-      is_owner: {
-         is_owner: boolean,
-      }[],
+      is_owner: boolean,
    }>
 };
 
@@ -87,8 +85,7 @@ export default function RealtimeProvider(props: any) {
                      user_name,
                      full_name,
                      bio,
-                     profile_img_url,
-                     is_owner:conversation_user(is_owner)
+                     profile_img_url                  
                   )
                )
             `)
@@ -106,7 +103,17 @@ export default function RealtimeProvider(props: any) {
                .limit(15)
          );
 
+         const promises2 = response.data[0].conversations.map((conv) =>
+            conv.users.map(user => clientSupabase
+                  .from("conversation_user")
+                  .select("conversation_id, user_id, is_owner")
+                  .eq("conversation_id", conv.id)
+                  .eq("user_id", user.id)
+            )
+         ).flat();
+
          const response2 = await Promise.all(promises); // this should through an error if one does
+         const OwnerResponse = await Promise.all(promises2); // this should through an error if one does
 
          const final = response.data[0].conversations.map(
             (conv, i) => ({
@@ -114,9 +121,16 @@ export default function RealtimeProvider(props: any) {
                messages: response2[i].data?.flatMap(d => {
                   if (d.conversation_id === conv.id) return d
                   return [];
-               }) ?? null
+               }) ?? null,
+               users: conv.users.map((user, i2) => {
+                  if (OwnerResponse)
+                     return { ...user, is_owner: OwnerResponse[i].data?.find(o => o.conversation_id === conv.id && o.user_id === user.id)?.is_owner ?? false }
+                  return { ...user, is_owner: false };
+               }),
             })
-         );
+         ).sort((current, prev) =>
+            current.messages && current.messages[0] && prev.messages && prev.messages[0]
+               ? (Date.parse(current.messages[0].created_at) < Date.parse(prev.messages[0].created_at) ? 1 : -1) : 0);
 
          const response3 = await clientSupabase.from("user_contact").select(`
             users!contact_id (
@@ -191,7 +205,9 @@ export default function RealtimeProvider(props: any) {
                return { ...c, messages: updatedMessages ?? [] };
             });
    
-            return updated;
+            return updated.sort((current, prev) =>
+               current.messages && current.messages[0] && prev.messages && prev.messages[0]
+                  ? (Date.parse(current.messages[0].created_at) < Date.parse(prev.messages[0].created_at) ? 1 : -1) : 0);;
          });
       }
 
@@ -211,7 +227,9 @@ export default function RealtimeProvider(props: any) {
    
                return c;
             });
-            return updated;
+            return updated.sort((current, prev) =>
+               current.messages && current.messages[0] && prev.messages && prev.messages[0]
+                  ? (Date.parse(current.messages[0].created_at) < Date.parse(prev.messages[0].created_at) ? 1 : -1) : 0);;
          });
       }
 
@@ -248,8 +266,7 @@ export default function RealtimeProvider(props: any) {
                user_name,
                full_name,
                bio,
-               profile_img_url,
-               is_owner:conversation_user(is_owner)
+               profile_img_url
             )
          `).eq("id", newConvo.conversation_id)
             .then(response => {
@@ -264,15 +281,32 @@ export default function RealtimeProvider(props: any) {
                      .eq("conversation_id", response.data[0].id)
                      .order("created_at", { ascending: false })
                      .limit(15).then(response2 => {
-                        const final = {
-                           ...response.data[0],
-                           messages: response2.data,
-                        };
-   
-                        setConvos(prev => {
-                           const updated = prev;
-                           const x = updated.filter(u => u.id !== final.id);
-                           return [...x, final];
+
+                        if (response2.error) throw new Error(response2.error.message);
+
+                        const promises = response.data[0].users.map(user => clientSupabase
+                           .from("conversation_user")
+                           .select("user_id, is_owner")
+                           .eq("conversation_id", response.data[0].id)
+                           .eq("user_id", user.id)
+                        );
+
+                        Promise.all(promises).then(response3 => {
+                           const final = {
+                              ...response.data[0],
+                              messages: response2.data,
+                              users: response.data[0].users.map((user, i) => {
+                                 if (response3)
+                                    return { ...user, is_owner: response3[i].data?.find(o => o.user_id === user.id)?.is_owner ?? false }
+                                 return { ...user, is_owner: false };
+                              }),
+                           };
+      
+                           setConvos(prev => {
+                              const updated = prev;
+                              const x = updated.filter(u => u.id !== final.id);
+                              return [...x, final];
+                           });
                         });
                      });
                }
