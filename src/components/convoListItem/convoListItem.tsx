@@ -49,7 +49,7 @@ export default function ConvoListItem({ convo, userId }: { convo: Convo, userId:
             {getUnreadMessages(convo.messages) !== 0 && <div className="p-1 aspect-square bg-red-color rounded-full">{getUnreadMessages(convo.messages)}</div> }
             <div className="text-sm text-text-color/70">
                { convo.messages.at(-1)?.sender_id === userId && <p>Sent</p>}
-               <p>{new Date(convo.messages.at(-1)?.created_at ?? "")
+               <p>{new Date(convo.messages.at(0)?.created_at ?? "")
                   .toLocaleTimeString(undefined, {
                      hour: 'numeric',
                      minute: '2-digit',
