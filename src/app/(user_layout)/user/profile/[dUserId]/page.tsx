@@ -121,7 +121,7 @@ export default function DUserProfile() {
 
       const MsgResponse = await clientSupabase.from("messages")
          .insert([{
-            sender_id: dUser.id,
+            sender_id: userId,
             body: "Hi, I just created this chat.",
             conversation_id: newConvoId,
          }]);
