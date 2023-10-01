@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { type ReactNode, type KeyboardEvent, useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { type ReactNode } from "react";
 
 import { useRealtime } from "@/providers/realtimeProvider";
 import useTheme from "@/hooks/useTheme";
@@ -25,13 +25,6 @@ export default function UserLayout({ children }: { children: ReactNode }) {
 
    const pathname = usePathname();
    const router = useRouter();
-   // const params = useParams();
-
-   // handle search submit
-   // function handleSearch(e: KeyboardEvent<HTMLInputElement>) {
-   //    if (e.key === "Enter") router.push(`/user/search?term=${e.currentTarget.value}`)
-   // }
-
 
    return <>
       
@@ -67,17 +60,3 @@ export default function UserLayout({ children }: { children: ReactNode }) {
       >{children}</div>
    </>;
 }
-
-/* 
-: pathname === "/user/search" ? <>
-   <button onClick={() => router.back()}>Back</button>
-   <input type="search" name="search" onKeyDown={handleSearch} className="border-2 border-black" placeholder="search..."/>
-</>
-: pathname.includes("/user/conversation/") ? <>
-   <button onClick={() => pathname === `/user/conversation/${params.conversationId}/info` ? router.back() : router.push("/user")}>Back</button>
-   {pathname !== "/user/conversation/add" && <p>{convos && convos.find(conv => conv.id === params.conversationId)?.name}</p>}
-   {pathname !== "/user/conversation/add" && !pathname.includes("/info")
-      ? <Link href={`/user/conversation/${params.conversationId}/info`}>Info</Link> : <div className="w-7"></div>}
-</> : ""
-
-*/
