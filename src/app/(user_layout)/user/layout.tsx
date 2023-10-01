@@ -57,7 +57,7 @@ export default function UserLayout({ children }: { children: ReactNode }) {
          </section>
       </div>
       <Link
-         href="/user/conversation/add"
+         href="/user/conversation/add/members"
          className="w-12 pt-1 grid justify-center items-center aspect-square rounded-sm fixed bottom-4 right-4 md:right-[calc(100vw-370px+1rem)] bg-convo-header-bg-color text-convo-header-text-color text-2xl font-bold shadow-basic hover:bg-btn-color transition-all duration-300"
       >+</Link>
 
