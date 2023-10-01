@@ -1,4 +1,4 @@
-export type Json =
+type Json =
   | string
   | number
   | boolean
@@ -71,7 +71,7 @@ export interface Database {
           created_at: string
           file_url: string | null
           id: string
-          read_status: boolean
+          read_status: string
           sender_id: string
         }
         Insert: {
@@ -80,7 +80,7 @@ export interface Database {
           created_at?: string
           file_url?: string | null
           id?: string
-          read_status?: boolean
+          read_status: string
           sender_id: string
         }
         Update: {
@@ -89,7 +89,7 @@ export interface Database {
           created_at?: string
           file_url?: string | null
           id?: string
-          read_status?: boolean
+          read_status?: string
           sender_id?: string
         }
         Relationships: [
@@ -207,7 +207,11 @@ export interface Database {
       [_ in never]: never
     }
     CompositeTypes: {
-      [_ in never]: never
+      create_convo_return: {
+        name: string
+        id: string
+        group_img_url: string
+      }
     }
   }
 }
