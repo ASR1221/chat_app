@@ -27,7 +27,7 @@ export default function ConvoListItem({ convo, userId }: { convo: Convo, userId:
       className="grid grid-cols-[1fr_5fr_2fr] items-center gap-4 py-3 max-h-20"
    >
 
-      <div className="aspect-square max-w-[55px] min-w-[50px] rounded-md border-2 border-devider-line-color">
+      <div className="aspect-square overflow-hidden max-w-[55px] min-w-[50px] rounded-md border-2 border-devider-line-color">
          {convo.group_img_url && <Image
             src={convo.group_img_url}
             alt="conversation image"
