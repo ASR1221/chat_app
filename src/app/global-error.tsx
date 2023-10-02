@@ -8,7 +8,7 @@ export default function GlobalError({ error, reset }: {
       <body>
          <div className="w-fit mx-auto mt-32">
             <div className="w-[300px] mx-auto">
-               <img src="/images/illustrations/500 Internal Server Error-amico.svg" alt="Empty chat illustration" />
+               <img src="/images/illustrations/500 Internal Server Error-amico.svg" alt="Error illustration" />
             </div>
             <p className="text-center w-[300px]">Something went wrong. Would you like to try again?</p>
             <div className="w-fit mx-auto">
