@@ -63,8 +63,6 @@ export default function RealtimeProvider(props: any) {
    });
    const [convos, setConvos] = useState<Convo[]>([]);
 
-   console.log(convos);
-
    const [msgPlaceHolder, setMsgPlaceHolder] = useState<MsgPlaceHolder[]>([]);
    
    async function fetchAll() {
