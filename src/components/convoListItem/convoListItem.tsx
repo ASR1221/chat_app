@@ -24,7 +24,7 @@ export default function ConvoListItem({ convo, userId }: { convo: Convo, userId:
    return <Link
       href={`/user/conversation/${convo.id}`}
       key={convo.id}
-      className="grid grid-cols-[1fr_5fr_2fr] items-center gap-4 py-3 max-h-20"
+      className="grid grid-cols-[1fr_5fr_2fr] items-center gap-4 py-3 max-h-20 relative"
    >
 
       <div className="aspect-square overflow-hidden max-w-[55px] min-w-[50px] rounded-md border-2 border-devider-line-color">
@@ -58,6 +58,12 @@ export default function ConvoListItem({ convo, userId }: { convo: Convo, userId:
                }</p>
             </div>
          </div> : null}
+         
+         {
+            convo.newMsgCount > 0 && <p
+               className="w-fit aspect-square p-1 bg-red-color absolute top-1/2 -translate-y-1/2 left-[65%]"
+            >convo.newMsgCount</p>
+         }
       </div>
 
    </Link>

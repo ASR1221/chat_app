@@ -8,6 +8,7 @@ import { clientSupabase } from "@/utils/clientSupabase";
 export type OUser = Omit<User, "id" | "created_at" | "last_seen">;
 
 export type Convo = Omit<Conversation, "created_at"> & {
+   newMsgCount: number,
    messages: Message[] | null,
    users: Array<Omit<User, "created_at" | "last_seen"> & {
       is_owner: boolean,
@@ -61,6 +62,8 @@ export default function RealtimeProvider(props: any) {
       profile_img_url: null,
    });
    const [convos, setConvos] = useState<Convo[]>([]);
+
+   console.log(convos);
 
    const [msgPlaceHolder, setMsgPlaceHolder] = useState<MsgPlaceHolder[]>([]);
    
@@ -116,18 +119,25 @@ export default function RealtimeProvider(props: any) {
          const OwnerResponse = await Promise.all(promises2); // this should through an error if one does
 
          const final = response.data[0].conversations.map(
-            (conv, i) => ({
-               ...conv,
-               messages: response2[i].data?.flatMap(d => {
-                  if (d.conversation_id === conv.id) return d
-                  return [];
-               }) ?? null,
-               users: conv.users.map((user, i2) => {
-                  if (OwnerResponse)
-                     return { ...user, is_owner: OwnerResponse[i].data?.find(o => o.conversation_id === conv.id && o.user_id === user.id)?.is_owner ?? false }
-                  return { ...user, is_owner: false };
-               }),
-            })
+            (conv, i) => {
+               let newMsgCount = 0;
+               return {
+                  ...conv,
+                  messages: response2[i].data?.flatMap(d => {
+                     if (d.conversation_id === conv.id) {
+                        if (userId !== d.sender_id && !d.read_status.includes(user.user_name)) newMsgCount++;
+                        return d;
+                     }
+                     return [];
+                  }) ?? null,
+                  users: conv.users.map((user, i2) => {
+                     if (OwnerResponse)
+                        return { ...user, is_owner: OwnerResponse[i].data?.find(o => o.conversation_id === conv.id && o.user_id === user.id)?.is_owner ?? false }
+                     return { ...user, is_owner: false };
+                  }),
+                  newMsgCount,
+               };
+            }
          ).sort((current, prev) =>
             current.messages && current.messages[0] && prev.messages && prev.messages[0]
                ? (Date.parse(current.messages[0].created_at) < Date.parse(prev.messages[0].created_at) ? 1 : -1) : 0);
@@ -222,7 +232,7 @@ export default function RealtimeProvider(props: any) {
                if (c.id === newMessage.conversation_id) {
                   const m = c.messages ?? [];
                   m.unshift(newMessage);
-                  return { ...c, messages: m };
+                  return { ...c, messages: m, newMsgCount: c.newMsgCount++ };
                };
    
                return c;
@@ -294,6 +304,7 @@ export default function RealtimeProvider(props: any) {
                         Promise.all(promises).then(response3 => {
                            const final = {
                               ...response.data[0],
+                              newMsgCount: 1, 
                               messages: response2.data,
                               users: response.data[0].users.map((user, i) => {
                                  if (response3)
