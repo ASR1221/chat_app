@@ -47,7 +47,7 @@ export default function AddGroupMembers() {
    }, [conts]);
 
    return <div className="absolute top-0 bottom-0 bg-bg-color w-[100%] px-5 py-20">
-   <SimpleNav header="Chat Members" />
+   <SimpleNav backPath="/user" header="Chat Members" />
 
    <form>
       <input

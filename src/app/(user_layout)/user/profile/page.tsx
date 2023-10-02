@@ -59,7 +59,7 @@ export default function UserProfile() {
 
    return <div className="absolute top-0 bottom-0 bg-bg-color w-[100%]">
 
-      <SimpleNav header="Profile" />
+      <SimpleNav backPath="/user" header="Profile" />
 
       <div className="py-20 px-3 max-w-md mx-auto bg-bg-color">
 

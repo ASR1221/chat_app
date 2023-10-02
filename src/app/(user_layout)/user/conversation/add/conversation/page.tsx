@@ -134,7 +134,7 @@ export default function CreateNewConvo() {
    }, [idsString]);
 
    return <div className="absolute top-0 bottom-0 bg-bg-color w-[100%] px-5 py-20">
-      <SimpleNav header="Chat Info" />
+      <SimpleNav backPath="/user/conversation/add/members" header="Chat Info" />
 
       <div className="mt-20 mx-5">
          <form onSubmit={handleSubmit} className="pb-4 border-b-[1px] border-devider-line-color">
