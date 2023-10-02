@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { BaseSyntheticEvent, useState } from "react";
 
 import { clientSupabase } from "@/utils/clientSupabase";
-import SignComp from "../signComp";
+import SignComp from "../../../components/signComp/signComp";
 
 export default function LogIn() {
    const { push } = useRouter();
@@ -27,5 +27,11 @@ export default function LogIn() {
       push("/user");
    }
 
-   return <SignComp handleSubmit={handleSubmit} errorMessage={message} type="Log In" />;
+   return (
+      <SignComp
+         handleSubmit={handleSubmit}
+         errorMessage={message}
+         type="Log In"
+      />
+   );
 }

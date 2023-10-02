@@ -4,7 +4,7 @@ import { BaseSyntheticEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { clientSupabase } from "@/utils/clientSupabase";
-import SignComp from "../signComp";
+import SignComp from "../../../components/signComp/signComp";
 
 export default function SignUp() {
    const { push } = useRouter();
@@ -26,6 +26,11 @@ export default function SignUp() {
       push(`/signup/verify?email=${e.target[0].value}`);
    }
 
-   return <SignComp handleSubmit={handleSubmit} errorMessage={message} type="Sign Up" />;
-
+   return (
+      <SignComp
+         handleSubmit={handleSubmit}
+         errorMessage={message}
+         type="Sign Up"
+      />
+   );
 }
