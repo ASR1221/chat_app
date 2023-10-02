@@ -80,7 +80,7 @@ export interface Database {
           created_at?: string
           file_url?: string | null
           id?: string
-          read_status: string
+          read_status?: string
           sender_id: string
         }
         Update: {
