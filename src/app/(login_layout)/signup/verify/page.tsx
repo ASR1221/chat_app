@@ -14,7 +14,10 @@ export default function ComoleteSignUp() {
 
    async function handleSubmit(e: BaseSyntheticEvent) {
       e.preventDefault();
-      const token: string = e.target[0].value;
+      const token: string = e.target[0].value.trim();
+
+      if (!token) return;
+
       const { data, error } = await clientSupabase.auth.verifyOtp({
          email: email ? email : "",
          token,
@@ -37,6 +40,7 @@ export default function ComoleteSignUp() {
             type="text"
             name="token"
             pattern="^\d+${6}"
+            required
          />
          <button type="submit" className="w-20 p-1 bg-btn-color rounded-md border-[1px] hover:border-btn-border-color">Check</button>
 

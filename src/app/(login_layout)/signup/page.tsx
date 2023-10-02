@@ -13,9 +13,11 @@ export default function SignUp() {
    async function handleSubmit(e: BaseSyntheticEvent) {
       e.preventDefault();
 
+      if (!(e.target[0].value.trim() && e.target[1].value.trim())) return;
+
       const { error } = await clientSupabase.auth.signUp({
-         email: e.target[0].value,
-         password: e.target[1].value,
+         email: e.target[0].value.trim(),
+         password: e.target[1].value.trim(),
       });
 
       if (error) {
