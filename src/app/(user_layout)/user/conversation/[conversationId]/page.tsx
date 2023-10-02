@@ -42,7 +42,10 @@ export default function Conversation() {
    const isMsgRefVisible = useIsIntersecting(msgScrollRef, "20px");
    const isInfiniteRefVisible = useIsIntersecting(infiniteScrollRef, "20px");
 
-   const { convos, setConvos, userId, msgPlaceHolder, setMsgPlaceHolder } = useRealtime();
+   const readStatusRef = useRef<HTMLDivElement | null>(null);
+   const isReadStatusRefVisible = useIsIntersecting(readStatusRef, "0px");
+
+   const { convos, setConvos, userId, user, msgPlaceHolder, setMsgPlaceHolder } = useRealtime();
 
    const conversation = useMemo(() => {
       return convos.find(conv => conv.id === conversationId);
@@ -183,6 +186,18 @@ export default function Conversation() {
 
    }, [convos]);
 
+   useEffect(() => {
+      if (!isReadStatusRefVisible) return;
+      
+      const allReadStatus = conversation?.messages?.flatMap(m => userId !== m.sender_id && !m.read_status.includes(user.user_name) ? m.read_status : []);
+      
+      allReadStatus?.forEach(s => {
+         clientSupabase.from("messages").update({ read_status: `${s} ${user.user_name}` })
+            .eq("conversation_id", conversationId);
+      });
+      
+   }, [isReadStatusRefVisible]);
+
 
    return <div className="absolute top-0 bottom-0 bg-bg-color w-[100%]">
       {/* nav section */}
@@ -216,6 +231,7 @@ export default function Conversation() {
                   date && <p className="text-center text-sm font-sans mt-1 mb-2 pointer-events-none">{date}</p>
                }
                <div
+                  ref={conversation.messages && i === (conversation.messages.length - 1) && msg.sender_id !== userId ? readStatusRef : null}
                   role="button"
                   key={i}
                   onClick={() => setIsDeleteVisibleId(p => p === i ? null : i)}
