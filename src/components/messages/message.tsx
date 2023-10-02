@@ -10,7 +10,7 @@ type Props = {
    body: string | null,
    file_url: string | null,
    time: string,
-   read_status: boolean,
+   read_status: string,
    sender_id: string,
    userId: string,
    isEnd: boolean
@@ -51,7 +51,7 @@ export default function Message({ id, body, file_url, time, read_status, sender_
          </p>
          
          {
-            sender_id === userId && <p className="ml-auto font-sans">{read_status ? "seen" : "sent"}</p>
+            sender_id === userId && <p className="ml-auto font-sans">{read_status.length > 0 ? "seen" : "sent"}</p>
          }
       </div>
 
