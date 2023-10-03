@@ -123,7 +123,7 @@ export default function RealtimeProvider(props: any) {
                   ...conv,
                   messages: response2[i].data?.flatMap(d => {
                      if (d.conversation_id === conv.id) {
-                        if (userId !== d.sender_id && !d.read_status.includes(user.user_name)) newMsgCount++;
+                        if (userId !== d.sender_id && !d.read_status.includes(response.data[0].user_name)) newMsgCount++;
                         return d;
                      }
                      return [];
@@ -189,7 +189,7 @@ export default function RealtimeProvider(props: any) {
                      return message;
                   }) ?? null;
                   
-                  return { ...c, messages: m };
+                  return { ...c, messages: m, newMsgCount: 0 };
                };
    
                return c;
@@ -223,7 +223,11 @@ export default function RealtimeProvider(props: any) {
          
          if (newMessage.sender_id === userId)
             setMsgPlaceHolder(msgPlaceHolder.filter(f => f.body !== newMessage.body || f.file_url !== newMessage.file_url));
-         
+         else {
+            const notificationSound = new Audio("/sounds/Anya [Waku Waku] notification sound(MP3_160K).mp3");
+            notificationSound.play();
+         }
+
          setConvos(prev => {
             const updated = prev.map(c => {
 
