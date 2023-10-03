@@ -21,8 +21,8 @@ export default function Message({ id, body, file_url, time, read_status, sender_
    const [isOpen, setIsOpen] = useState(false);
 
    return <div className={`${sender_id === userId ? "float-right bg-msg-own-bg-color" : "float-left bg-msg-other-bg-color"} 
-      min-w-[15%] border-[1px] border-black rounded-lg overflow-hidden
-      ${isEnd && sender_id === userId ? "rounded-ee-none" : isEnd && sender_id !== userId ? "rounded-se-none" : null}
+      min-w-[100px] border-[1px] border-black rounded-lg overflow-hidden
+      ${isEnd && sender_id === userId ? "rounded-ee-none" : isEnd && sender_id !== userId ? "rounded-es-none" : null}
       ${file_url ? "max-w-[65vw] md:max-w-[35vw] lg:max-w-[45vw]" : "max-w-[70%]"}`}
    >
       {
@@ -41,8 +41,8 @@ export default function Message({ id, body, file_url, time, read_status, sender_
       {
          !body ? null : <p className="p-2 text-sm whitespace-pre-line">{ body }</p>
       }
-      <div className={`${sender_id === userId && "grid grid-cols-[2fr_1fr]"} text-devider-line-color px-2 pb-[2px] text-xs`}>
-         <p className="font-sans">
+      <div className={`${sender_id === userId ? "grid grid-cols-[2fr_1fr]" : ""} text-devider-line-color px-2 pb-[2px] text-xs`}>
+         <p className={`font-sans w-fit ${sender_id === userId ? "" : "ml-auto"} pb-[2px]`}>
             {new Date(time).toLocaleTimeString(undefined, {
                hour: 'numeric',
                minute: '2-digit',
