@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { useParams, usePathname } from "next/navigation";
 import {
@@ -193,7 +194,8 @@ export default function Conversation() {
       
       allReadStatus?.forEach(s => {
          clientSupabase.from("messages").update({ read_status: `${s} ${user.user_name}` })
-            .eq("conversation_id", conversationId);
+            .eq("conversation_id", conversationId)
+            .then(res => console.log(""));
       });
       
    }, [isReadStatusRefVisible]);
@@ -204,7 +206,7 @@ export default function Conversation() {
       <ConversationNav conversation={conversation} isDark={isDark} pathname={pathname} />
 
       {/* Main messages section */}
-      <main className="py-20 px-3 grid grid-cols-1 bg-bg-color" ref={containerRef}>
+      <main className="py-20 px-5 grid grid-cols-1 bg-bg-color no-scrollbar" ref={containerRef}>
 
          <div ref={infiniteScrollRef} />
 
@@ -215,11 +217,11 @@ export default function Conversation() {
                Date.parse(conversation.messages[i - 1].created_at) - Date.parse(msg.created_at) < 120 * 1000) : true;
 
             const date1 = new Date(msg.created_at);
-            const date2 = new Date(conversation.messages && conversation.messages[i - 1] ? conversation.messages[i - 1].created_at : "");
+            const date2 = new Date(conversation.messages && conversation.messages[i + 1] ? conversation.messages[i + 1].created_at : "");
 
             let date = "";
 
-            if (date2 && date1.getDay() !== date2.getDay()) 
+            if ((date2.getDay() && date1.getDay() !== date2.getDay()) || (conversation.messages && i === conversation.messages.length - 1)) 
                date = `${date1.getDay() + 1}/${date1.getMonth() + 1}/${date1.getFullYear()}`;
                         
             return !(msg.body || msg.file_url) ? null : <div
@@ -231,18 +233,18 @@ export default function Conversation() {
                   date && <p className="text-center text-sm font-sans mt-1 mb-2 pointer-events-none">{date}</p>
                }
                <div
-                  ref={conversation.messages && i === (conversation.messages.length - 1) && msg.sender_id !== userId ? readStatusRef : null}
+                  ref={i === 0 && msg.sender_id !== userId ? readStatusRef : null}
                   role="button"
                   key={i}
                   onClick={() => setIsDeleteVisibleId(p => p === i ? null : i)}
-                  className={`w-[100%] cursor-pointer ${(msg.sender_id !== userId || isDeleteVisibleId === i) ? "flex gap-4" : ""} ${isDeleteVisibleId === i && msg.sender_id === userId ? "justify-end" : ""}`}
+                  className={`w-[100%] ${msg.sender_id === userId ? "cursor-pointer" : "cursor-default"} ${(msg.sender_id !== userId || isDeleteVisibleId === i) ? "flex gap-4" : ""} ${isDeleteVisibleId === i && msg.sender_id === userId ? "justify-end" : ""}`}
                > 
                   {
-                     msg.sender_id !== userId && <div className="rounded-[3px] overflow-hidden w-10 aspect-square mt-auto mb-[2px] bg-devider-line-color">
+                     msg.sender_id !== userId && <Link href={`/user/profile/${msg.sender_id}`} className={`rounded-[3px] overflow-hidden w-10 aspect-square mt-auto mb-[2px] cursor-pointer ${isEnd ? "bg-devider-line-color" : ""} `}>
                         {
                            isEnd && <img src={conversation.users.find(u => u.id === msg.sender_id)?.profile_img_url ?? ""} className="object-cover" />
                         }
-                     </div>
+                     </Link>
                   }
                   {
                      msg.sender_id === userId && isDeleteVisibleId === i && <button
