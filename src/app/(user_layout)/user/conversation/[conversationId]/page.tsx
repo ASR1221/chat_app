@@ -238,7 +238,7 @@ export default function Conversation() {
                   className={`w-[100%] cursor-pointer ${(msg.sender_id !== userId || isDeleteVisibleId === i) ? "flex gap-4" : ""} ${isDeleteVisibleId === i && msg.sender_id === userId ? "justify-end" : ""}`}
                > 
                   {
-                     msg.sender_id !== userId && <div className="rounded-sm overflow-hidden w-14 aspect-square">
+                     msg.sender_id !== userId && <div className="rounded-[3px] overflow-hidden w-10 aspect-square mt-auto mb-[2px] bg-devider-line-color">
                         {
                            isEnd && <img src={conversation.users.find(u => u.id === msg.sender_id)?.profile_img_url ?? ""} className="object-cover" />
                         }
