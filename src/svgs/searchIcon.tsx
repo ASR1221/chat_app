@@ -15,9 +15,9 @@ function SearchIcon({ isDark, width }: { isDark: boolean, width: number }) {
          <path
             d="m 131.99692,147.84947 c -2.48668,0 -4.49792,2.01124 -4.49792,4.49791 0,2.48667 2.01124,4.49792 4.49792,4.49792 0.8878,0 1.70945,-0.26045 2.40605,-0.7028 l 3.24941,3.24941 1.12448,-1.12448 -3.20807,-3.1998 c 0.57671,-0.75654 0.92604,-1.69395 0.92604,-2.72025 0,-2.48667 -2.01124,-4.49791 -4.49791,-4.49791 z m 0,1.05833 c 1.90479,0 3.43958,1.53479 3.43958,3.43958 0,1.9048 -1.53479,3.43959 -3.43958,3.43959 -1.9048,0 -3.43959,-1.53479 -3.43959,-3.43959 0,-1.90479 1.53479,-3.43958 3.43959,-3.43958 z"
             id="path824"
-            style={{mixBlendMode: "normal", fill: isDark ? "#0863A5" : "#054472", fillRule: "nonzero", stroke: "none", strokeWidth: 0.264583, strokeLinecap: "butt", strokeLinejoin: "miter", strokeMiterlimit: 10, strokeDasharray: "none", strokeDashoffset: 0}} />
+            style={{mixBlendMode: "normal", fill: isDark ? "#ffffff" : "#054472", fillRule: "nonzero", stroke: "none", strokeWidth: 0.264583, strokeLinecap: "butt", strokeLinejoin: "miter", strokeMiterlimit: 10, strokeDasharray: "none", strokeDashoffset: 0}} />
          <path
-            style={{fill: isDark ? "#0863A5" : "#054472", strokeWidth: 0.265}}
+            style={{fill: isDark ? "#ffffff" : "#054472", strokeWidth: 0.265}}
             d="m 138.77686,158.26743 c -0.14719,-0.14719 -0.35408,-0.23289 -0.56224,-0.23289 -0.20816,0 -0.41505,0.0857 -0.56224,0.23289 -0.14719,0.14719 -0.23289,0.35408 -0.23289,0.56224 0,0.20816 0.0857,0.41505 0.23289,0.56224 0.14719,0.14719 0.35408,0.23289 0.56224,0.23289 0.20816,0 0.41505,-0.0857 0.56224,-0.23289 0.14719,-0.14719 0.23289,-0.35408 0.23289,-0.56224 0,-0.20816 -0.0857,-0.41505 -0.23289,-0.56224 z"
             id="path892" />
    </g>
