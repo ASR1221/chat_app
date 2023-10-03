@@ -2,9 +2,15 @@
 
 import { BaseSyntheticEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Metadata } from "next";
 
 import { clientSupabase } from "@/utils/clientSupabase";
 import SignComp from "../../../components/signComp/signComp";
+
+export const metadata: Metadata = {
+   title: 'Chatty | SignUp',
+   description: 'Sign up with your email and password and enjoy chatting',
+};
 
 export default function SignUp() {
    const { push } = useRouter();

@@ -20,7 +20,7 @@ const laila = Laila({
 
 export const metadata: Metadata = {
   title: 'Chatty',
-  description: 'Chat with anyone with fun and security',
+  description: 'Chat with whoever you want is fast, secure and fun with chatty',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

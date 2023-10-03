@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { type ReactNode } from "react";
+import { Metadata } from "next";
 
 import { useRealtime } from "@/providers/realtimeProvider";
 import useTheme from "@/hooks/useTheme";
@@ -13,9 +14,10 @@ import OptionsIcon from "@/components/optionsIcon/optionsIcon";
 import ConvoListItem from "@/components/convoListItem/convoListItem";
 import EmptyList from "@/components/emptyList/emptyList";
 
-// TODO: make create convos with accept multiple users
-// TODO: check if realtime needed for 'conversations'
-// TODO: check how to show online status of a user
+export const metadata: Metadata = {
+   title: 'Chatty | chats',
+   description: 'All chats',
+};
 
 export default function UserLayout({ children }: { children: ReactNode }) {
 

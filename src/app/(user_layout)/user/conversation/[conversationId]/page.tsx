@@ -1,5 +1,6 @@
 "use client";
 
+import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams, usePathname } from "next/navigation";
@@ -20,6 +21,11 @@ import ConfirmationModal from "@/components/confirmationModal/confirmationModal"
 import ConversationNav from "@/components/conversationNav/conversationNav";
 import ConversationSendComp from "@/components/conversationSendComp/conversationSendComp";
 import EmptyList from "@/components/emptyList/emptyList";
+
+export const metadata: Metadata = {
+   title: 'Chatty | Chat',
+   description: 'A chat',
+};
 
 export default function Conversation() {
    const pathname = usePathname();

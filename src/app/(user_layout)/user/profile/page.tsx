@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Metadata } from "next";
 
 import useTheme from "@/hooks/useTheme";
 import { useRealtime } from "@/providers/realtimeProvider";
@@ -12,6 +13,11 @@ import TextInputEdit from "@/components/textInputEdit/textInputEdit";
 import EditIcon from "@/svgs/editIcon";
 import SimpleNav from "@/components/simpleNav/simpleNav";
 import ImageModal from "@/components/imageModal/imageModal";
+
+export const metadata: Metadata = {
+   title: 'Chatty | Profile',
+   description: 'Your profile',
+};
 
 export default function UserProfile() {
 

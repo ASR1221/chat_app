@@ -1,8 +1,15 @@
 "use client";
 
-import { clientSupabase } from "@/utils/clientSupabase";
+import { Metadata } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type BaseSyntheticEvent, useRef, useEffect } from "react";
+
+import { clientSupabase } from "@/utils/clientSupabase";
+
+export const metadata: Metadata = {
+   title: 'Chatty | Profile Image',
+   description: 'Choose a profile image',
+};
 
 export default function ProfileImage() {
 

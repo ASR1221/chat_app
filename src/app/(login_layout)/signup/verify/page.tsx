@@ -3,8 +3,14 @@
 import { useSearchParams } from "next/navigation";
 import { BaseSyntheticEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Metadata } from "next";
 
 import { clientSupabase } from "@/utils/clientSupabase";
+
+export const metadata: Metadata = {
+   title: 'Chatty | Confirm',
+   description: 'Confirm your email to chat',
+};
 
 export default function ComoleteSignUp() {
    const email = useSearchParams().get("email");

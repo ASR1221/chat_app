@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState, useEffect, BaseSyntheticEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { Metadata } from "next";
 
 import { clientSupabase } from "@/utils/clientSupabase";
 import { useRealtime } from "@/providers/realtimeProvider";
@@ -15,6 +16,10 @@ import UserListItem from "@/components/userListItem/userListItem";
 import TextInputEdit from "@/components/textInputEdit/textInputEdit";
 import AddUserIcon from "@/svgs/addUserIcon";
 
+export const metadata: Metadata = {
+   title: 'Chatty | Chat Info',
+   description: 'A chat info',
+};
 
 export default function ConversationInfo() {
 
