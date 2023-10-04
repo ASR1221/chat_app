@@ -32,11 +32,11 @@ export default function ConvoListItem({ convo, userId }: { convo: Convo, userId:
          <div className="grid grid-cols-1 items-center">
             <div>
                <h3 className="text-lg">{ convo.name }</h3>
-               <p className="text-text-color">{ convo.messages?.length ? deiplayShortMessage(convo.messages.at(0)?.body) : "No messages" }</p>
+               <p className="text-text-color text-sm">{ convo.messages?.length ? deiplayShortMessage(convo.messages.at(0)?.body) : "No messages" }</p>
             </div>
          </div>
-         {convo.messages?.length ? <div>
-            <div className="text-sm text-text-color/70">
+         {convo.messages?.length ? <div className="mt-auto">
+            <div className="text-xs text-text-color/70">
                { convo.messages.at(-1)?.sender_id === userId && <p>Sent</p>}
                <p>{new Date(convo.messages.at(0)?.created_at ?? "")
                   .toLocaleTimeString(undefined, {
