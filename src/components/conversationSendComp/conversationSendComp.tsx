@@ -88,7 +88,7 @@ export default function ConversationSendComp({ userId, conversationId, isDark, c
             onClick={() => document.documentElement.scrollTo(0, containerRef ? containerRef.offsetHeight + 1000 : 0)}
             className={`${!isMsgRefVisible ? "opacity-100 -top-[200%] pointer-events-auto z-auto" : "opacity-0 -top-[100%] pointer-events-none -z-10"} transition-all p-2 bg-convo-header-text-color rounded-full absolute -top-[200%] -right-[30%]`}>
             <div className="w-5 h-5 relative">
-               <div className="w-4 h-4 -pt-6 border-b-2 border-r-2 border-white rotate-45 absolute -top-[2px] left-[1.7px]" />
+               <div className="w-4 h-4 -pt-6 border-b-2 border-r-2 border-bg-color rotate-45 absolute -top-[2px] left-[1.7px]" />
             </div>
          </button>
          
