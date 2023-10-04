@@ -80,7 +80,9 @@ export default function ImageModal({ imgSrc, conversationId, isOpen, setIsOpen }
    }, [isOpen]);
 
    return <dialog ref={dialogRef} className="bg-transparent backdrop:bg-black/70 max-w-xl overflow-hidden">
-      <img src={imgSrc} className="max-w-xl max-h-[65vh]"/>
+      <div className="max-w-xl max-h-[65vh] overflow-hidden">
+         <img src={imgSrc} className="w-[100%] object-cover"/>
+      </div>
 
       <div className={`grid grid-cols-2 ${conversationId && "sm:grid-cols-4"} gap-3 mt-6`}>
          {
