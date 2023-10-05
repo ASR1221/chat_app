@@ -28,7 +28,7 @@ export default function ConversationInfo() {
    }, [convos, conversationId]);
 
    const isOwner = useMemo(
-      () => conversation?.users.find(u => u.id === userId)?.is_owner
+      () => conversation ? conversation.users.find(u => u.id === userId)?.is_owner : false
       ,[conversation]
    );
 
@@ -237,7 +237,7 @@ export default function ConversationInfo() {
             }}
          >
             {isOwner ? <img src="/images/icons/icons8-delete.svg" alt="Delete icon" className="w-6 group-hover:scale-[1.2] transition-all"/> : null}
-            <p>{isOwner ? "Delete Chat" : "Leave Chat"}</p>
+            <p className="w-20">{isOwner ? "Delete Chat" : "Leave Chat"}</p>
          </button>
          
          <ul className="px-2 py-4 border-t-[1px] border-devider-line-color">
