@@ -16,7 +16,7 @@ export default function DUserProfile() {
    const dUserId = useParams().dUserId as string;
    const { push } = useRouter();
 
-   const { userId, conts, setConts } = useRealtime();
+   const { userId, user, conts, setConts } = useRealtime();
 
    const [isImgOpen, setIsImgOpen] = useState(false);
    
@@ -72,13 +72,10 @@ export default function DUserProfile() {
       const newConvo: {
          id: string,
          name: string,
-         group_img_url?: string,
       } = {
          id: newConvoId,
-         name: dUser.user_name,
+         name: `${dUser.user_name}, ${user.user_name}`,
       };
-
-      if (dUser.profile_img_url) newConvo.group_img_url = dUser.profile_img_url;
 
       const convoResponse = await clientSupabase.from("conversations").insert([newConvo]);
 
