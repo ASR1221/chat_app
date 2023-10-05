@@ -6,11 +6,6 @@ import { Metadata } from "next";
 
 import { clientSupabase } from "@/utils/clientSupabase";
 
-export const metadata: Metadata = {
-   title: 'Chatty | LInfo',
-   description: 'Write down your info to complete sign up',
-};
-
 export default function SignUpInfo() {
    const { push } = useRouter();
    const userId = useSearchParams().get("userId");

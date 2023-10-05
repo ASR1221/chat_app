@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Metadata } from "next";
 
 import { useRealtime } from "@/providers/realtimeProvider";
 import { clientSupabase } from "@/utils/clientSupabase";
@@ -11,11 +10,6 @@ import { User } from "@/types/supabaseTables";
 
 import SimpleNav from "@/components/simpleNav/simpleNav";
 import ImageModal from "@/components/imageModal/imageModal";
-
-export const metadata: Metadata = {
-   title: 'Chatty | Profile',
-   description: 'A user profile',
-};
 
 export default function DUserProfile() {
 

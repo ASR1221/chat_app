@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState, type BaseSyntheticEvent } from "react";
-import { Metadata } from "next";
 
 import { useRealtime } from "@/providers/realtimeProvider";
 import useTheme from "@/hooks/useTheme";
@@ -14,11 +13,6 @@ import SimpleNav from "@/components/simpleNav/simpleNav";
 import UserListItem from "@/components/userListItem/userListItem";
 import ConvoListItem from "@/components/convoListItem/convoListItem";
 import EmptyList from "@/components/emptyList/emptyList";
-
-export const metadata: Metadata = {
-   title: 'Chatty | Search',
-   description: 'Search for users or chats',
-};
 
 export default function Search() {
 

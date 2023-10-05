@@ -2,7 +2,6 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { type BaseSyntheticEvent, useEffect, useState, useMemo } from "react";
-import { Metadata } from "next";
 
 import useTheme from "@/hooks/useTheme";
 import { useRealtime } from "@/providers/realtimeProvider";
@@ -11,11 +10,6 @@ import { clientSupabase } from "@/utils/clientSupabase";
 import EmptyList from "@/components/emptyList/emptyList";
 import SimpleNav from "@/components/simpleNav/simpleNav";
 import UserListItem from "@/components/userListItem/userListItem";
-
-export const metadata: Metadata = {
-   title: 'Chatty | Add Member',
-   description: 'Add member to a chat',
-};
 
 export default function AddMemberToConvo() {
 

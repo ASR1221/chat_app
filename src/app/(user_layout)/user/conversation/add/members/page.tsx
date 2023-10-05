@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useEffect, type BaseSyntheticEvent} from "react";
-import { Metadata } from "next";
 
 import useTheme from "@/hooks/useTheme";
 import { useRealtime } from "@/providers/realtimeProvider";
@@ -10,11 +9,6 @@ import { useRealtime } from "@/providers/realtimeProvider";
 import SimpleNav from "@/components/simpleNav/simpleNav";
 import UserListItem from "@/components/userListItem/userListItem";
 import EmptyList from "@/components/emptyList/emptyList";
-
-export const metadata: Metadata = {
-   title: 'Chatty | Add Chat',
-   description: 'Add a chat',
-};
 
 export default function AddGroupMembers() {
 

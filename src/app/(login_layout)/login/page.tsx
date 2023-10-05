@@ -1,16 +1,10 @@
 "use client";
 
-import { Metadata } from "next";
 import { useRouter } from "next/navigation";
 import { BaseSyntheticEvent, useState } from "react";
 
 import { clientSupabase } from "@/utils/clientSupabase";
 import SignComp from "../../../components/signComp/signComp";
-
-export const metadata: Metadata = {
-   title: 'Chatty | Log In',
-   description: 'Log in with your email and password and enjoy chatting',
-};
 
 export default function LogIn() {
    const { push } = useRouter();
