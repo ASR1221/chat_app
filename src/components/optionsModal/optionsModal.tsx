@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, useMemo } from "react";
 
 import { clientSupabase } from "@/utils/clientSupabase";
@@ -10,6 +10,7 @@ import useTheme from "@/hooks/useTheme";
 export default function OptionsModal() {
    
    const { push } = useRouter();
+   const pathname = usePathname();
 
    const optionsParam = useSearchParams();
    const mRef = useRef<HTMLDialogElement | null>(null);
@@ -59,7 +60,7 @@ export default function OptionsModal() {
          const x = e.target as HTMLElement;
 
          if (x.childNodes[0].nodeName === "UL") {
-            push("/user");
+            push(pathname);
          }
       }
 
