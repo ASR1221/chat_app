@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { type ReactNode } from "react";
-import { Metadata } from "next";
+import { useEffect, type ReactNode } from "react";
 
 import { useRealtime } from "@/providers/realtimeProvider";
 import useTheme from "@/hooks/useTheme";
@@ -14,11 +13,6 @@ import OptionsIcon from "@/components/optionsIcon/optionsIcon";
 import ConvoListItem from "@/components/convoListItem/convoListItem";
 import EmptyList from "@/components/emptyList/emptyList";
 
-export const metadata: Metadata = {
-   title: 'Chatty | chats',
-   description: 'All chats',
-};
-
 export default function UserLayout({ children }: { children: ReactNode }) {
 
    const { userId, convos } = useRealtime();
@@ -28,10 +22,35 @@ export default function UserLayout({ children }: { children: ReactNode }) {
    const pathname = usePathname();
    const router = useRouter();
 
+   useEffect(() => {
+      let theme: "light" | "dark" = "light";
+  
+      if (localStorage && localStorage.getItem("theme")) {
+        theme = localStorage.getItem("theme") as "light" | "dark";
+      } else if (!window.matchMedia) {
+        theme = "light";
+      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches){
+        theme = "dark";
+      }
+  
+      document.documentElement.setAttribute("data-theme", theme);
+  
+      function setTheme(isDark: boolean) {
+        if (!(localStorage && localStorage.getItem("theme")))
+          document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+      }
+  
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e => setTheme(e.matches));
+  
+      return () => window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", e => setTheme(e.matches));
+  
+    }, []);
+
+
    return <>
       
       <nav className="fixed grid grid-cols-[1fr_8fr_1fr] gap-5 items-center justify-between p-4 bg-convo-header-bg-color text-convo-header-text-color px-4 w-[100%] md:w-[370px]">
-         <OptionsIcon clickFunc={() => router.push("/user?options=true")}/>
+         <OptionsIcon clickFunc={() => router.push(`${pathname}?options=true`)}/>
          <h2 className="text-4xl text-convo-header-text-color">Chatty</h2>
          <Link href="/user/search"><SearchIcon isDark={isDark} width={25} /></Link>
       </nav>
@@ -58,7 +77,7 @@ export default function UserLayout({ children }: { children: ReactNode }) {
 
       <div className="w-[1px] bg-devider-line-color left-[370px] top-0 bottom-0 z-[100] md:fixed" />
       <div
-         className={`w-[100vw] z-10 absolute top-0 bottom-0 ${pathname === "/user" ? "left-[100vw]" : "left-[0]"} transition-all md:w-[calc(100vw-370px)] md:left-[370px]`}
+         className={`w-[100vw] z-10 absolute ${pathname === "/user" ? "left-[100vw]" : "left-[0] top-0 bottom-0"} transition-all md:w-[calc(100vw-370px)] md:left-[370px]`}
       >{children}</div>
    </>;
 }

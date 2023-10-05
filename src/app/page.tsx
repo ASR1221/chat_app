@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import Logo from "@/svgs/logo";
 import useTheme from "@/hooks/useTheme";
@@ -35,6 +35,30 @@ export default function Landing() {
       () => observers.forEach(observer => observer.disconnect());
 
    }, []);
+
+   useEffect(() => {
+      let theme: "light" | "dark" = "light";
+  
+      if (localStorage && localStorage.getItem("theme")) {
+        theme = localStorage.getItem("theme") as "light" | "dark";
+      } else if (!window.matchMedia) {
+        theme = "light";
+      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches){
+        theme = "dark";
+      }
+  
+      document.documentElement.setAttribute("data-theme", theme);
+  
+      function setTheme(isDark: boolean) {
+        if (!(localStorage && localStorage.getItem("theme")))
+          document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+      }
+  
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e => setTheme(e.matches));
+  
+      return () => window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", e => setTheme(e.matches));
+  
+    }, []);
 
    return <div className="smooth-scroll">
       <nav className="flex justify-between items-center py-3 px-4 border-b-[1px] border-text-color sm:px-[15%]">
