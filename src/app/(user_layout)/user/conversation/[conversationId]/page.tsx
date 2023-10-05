@@ -162,7 +162,7 @@ export default function Conversation() {
    useEffect(() => {
 
       if (!isInfiniteRefVisible) return;
-
+      
       if (!containerRef.current) return;
       prevHeightRef.current = containerRef.current.offsetHeight;
 
@@ -176,13 +176,16 @@ export default function Conversation() {
       if (!containerRef.current) return;
 
       if (firstScroll.current && conversation?.messages) {
-         window.scrollTo(0, containerRef.current.offsetHeight + 1000);
+         setTimeout(() => {
+            document.documentElement.scrollTo(0, containerRef.current ? containerRef.current.offsetHeight + 1000 : 0)
+         }, 100);
+
          firstScroll.current = false;
          return;
       }
 
       if (msgScrollRef.current && isMsgRefVisible) {
-         document.documentElement.scrollTo(0, containerRef.current.offsetHeight + 1000);
+         document.documentElement.scrollTo(0, containerRef.current.offsetHeight + 10000);
          return;
       }
 
@@ -309,7 +312,7 @@ export default function Conversation() {
                </div>
             )
          }
-         <div ref={msgScrollRef} style={{ order: 100000000 }} className="mb-4" />
+         <div ref={msgScrollRef} style={{ order: 100000000 }} className="mb-4 h-1" />
          
       </main>
 
