@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { useEffect , type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
@@ -11,6 +11,30 @@ export default function Layout({ children }: { children: ReactNode }) {
  
    const path = usePathname();
    const { isDark } = useTheme();
+
+   useEffect(() => {
+      let theme: "light" | "dark" = "light";
+  
+      if (localStorage && localStorage.getItem("theme")) {
+        theme = localStorage.getItem("theme") as "light" | "dark";
+      } else if (!window.matchMedia) {
+        theme = "light";
+      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches){
+        theme = "dark";
+      }
+  
+      document.documentElement.setAttribute("data-theme", theme);
+  
+      function setTheme(isDark: boolean) {
+        if (!(localStorage && localStorage.getItem("theme")))
+          document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+      }
+  
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e => setTheme(e.matches));
+  
+      return () => window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", e => setTheme(e.matches));
+  
+   }, []);
 
    return <div className={path === "/signup/verify" ? "mt-10" : "mt-20"}>
       <div className="w-fit mx-auto">

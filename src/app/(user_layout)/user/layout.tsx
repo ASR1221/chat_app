@@ -44,7 +44,7 @@ export default function UserLayout({ children }: { children: ReactNode }) {
   
       return () => window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", e => setTheme(e.matches));
   
-    }, []);
+   }, []);
 
 
    return <>
