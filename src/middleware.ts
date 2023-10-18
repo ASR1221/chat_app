@@ -14,9 +14,7 @@ export async function middleware(request: NextRequest) {
 
    const session = await supabase.auth.getSession();
 
-   if (session.error) throw new Error("Something went wrong. Please refresh the page and try again.");
-
-   if (request.nextUrl.pathname.startsWith('/user') || request.nextUrl.pathname.startsWith('/info')) {
+   if ((request.nextUrl.pathname.startsWith('/user') || request.nextUrl.pathname.startsWith('/info')) && !session.error) {
       if (!session.data.session || session.data.session.expires_in < 1) return NextResponse.redirect(new URL("/", request.url));
    } else {
       if (session.data.session && session.data.session.expires_in > 1) return NextResponse.redirect(new URL("/user", request.url));
