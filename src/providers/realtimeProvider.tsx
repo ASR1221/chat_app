@@ -348,7 +348,6 @@ export default function RealtimeProvider(props: any) {
       const { data: authListener } = clientSupabase.auth.onAuthStateChange(
          (event, session) => {
             setUserId(session?.user.id ?? null);
-            console.log("Auth state changed: " + event);
          }
       );
 
