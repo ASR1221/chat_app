@@ -1,7 +1,6 @@
 "use client";
 
 import { BaseSyntheticEvent, useEffect, useState } from "react";
-import { Metadata } from "next";
 
 import { useRealtime } from "@/providers/realtimeProvider";
 import useTheme from "@/hooks/useTheme";
@@ -9,11 +8,6 @@ import useTheme from "@/hooks/useTheme";
 import UserListItem from "@/components/userListItem/userListItem";
 import SimpleNav from "@/components/simpleNav/simpleNav";
 import EmptyList from "@/components/emptyList/emptyList";
-
-export const metadata: Metadata = {
-   title: 'Chatty | Contacts',
-   description: 'Your contacts',
-};
 
 export default function Contacts() {
 
